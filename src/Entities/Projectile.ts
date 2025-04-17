@@ -2,7 +2,7 @@ import { Scene } from "phaser";
 
 export class Projectile extends Phaser.Physics.Arcade.Image {
   scene: Scene;
-  
+
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, "projectile");
     this.setScale(0.2);
@@ -20,12 +20,8 @@ export class Projectile extends Phaser.Physics.Arcade.Image {
 
     physBody.setVelocity(0, 0);
     physBody.setAcceleration(0);
-
-    this.scene.physics.velocityFromRotation(
-      angle,
-      speed,
-      physBody.velocity
-    );
+    physBody.onWorldBounds = true;
+    this.scene.physics.velocityFromRotation(angle, speed, physBody.velocity);
     this.rotation = angle;
   }
 
