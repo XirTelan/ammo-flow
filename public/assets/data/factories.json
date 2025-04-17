@@ -1,0 +1,20 @@
+{
+  "machineGun": {
+    "productionRate": 1
+  },
+  "sniper": {
+    "productionRate": 1
+  },
+  "plasmaCannon": {
+    "productionRate": 1
+  },
+  "flakCannon": {
+    "productionRate": 1
+  },
+  "railgun": {
+    "productionRate": 1
+  },
+  "artillery": {
+    "productionRate": 1
+  }
+}

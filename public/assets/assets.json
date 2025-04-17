@@ -1,0 +1,62 @@
+[
+  {
+    "path": "assets/data",
+    "files": [
+      {
+        "type": "json",
+        "key": "ammo",
+        "url": "ammo.json"
+      }
+    ]
+  },
+  {
+    "path": "assets/textures",
+    "files": [
+      {
+        "type": "image",
+        "key": "projectile",
+        "url": "projectile_base.png"
+      },
+      {
+        "type": "image",
+        "key": "map",
+        "url": "mapTest.png"
+      },
+      {
+        "type": "image",
+        "key": "ui",
+        "url": "ui.png"
+      }
+    ]
+  },
+  {
+    "path": "assets/textures/units",
+    "files": [
+      {
+        "type": "image",
+        "key": "light",
+        "url": "light.png"
+      }
+    ]
+  },
+  {
+    "path": "assets/textures/turrets",
+    "files": [
+      {
+        "type": "image",
+        "key": "machineGun",
+        "url": "machineGun.png"
+      },
+      {
+        "type": "image",
+        "key": "artillery",
+        "url": "artillery.png"
+      },
+      {
+        "type": "image",
+        "key": "artillery_ui",
+        "url": "artillery_ui.png"
+      }
+    ]
+  }
+]
