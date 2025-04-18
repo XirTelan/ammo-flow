@@ -10,14 +10,18 @@ enum TurretStatus {
   "empty",
 }
 
+enum EventTypes {
+  "ammoChange",
+  "statusChange",
+}
+
 export class Turret extends Phaser.GameObjects.Image {
   scene: Game;
 
   private warehouse: Warehouse = Warehouse.getInstance();
-
+  // listeners: Map<EventTypes, (...args: any[]) => void>;
   pos;
   target?: Phaser.GameObjects.GameObject;
-  events = new Phaser.Events.EventEmitter();
   turretConfig: TurretConfig;
   turretType: TurretType;
 
@@ -25,7 +29,7 @@ export class Turret extends Phaser.GameObjects.Image {
 
   currentAmmoData: AmmoVariant;
 
-  ammoCount: number = 10;
+  private _ammoCount: number = 10;
   ammoType: string;
 
   private _status: TurretStatus = TurretStatus.idle;
@@ -55,28 +59,40 @@ export class Turret extends Phaser.GameObjects.Image {
   set status(value: TurretStatus) {
     if (this._status === value) return;
     this._status = value;
+    this.emit("statusChange", this.status);
+  }
+
+  get status(): string {
+    return TurretStatus[this._status].toLocaleUpperCase();
+  }
+
+  set ammoCount(value: number) {
+    this._ammoCount = value;
+    this.emit("ammoChange", this.getAmmoStatus());
+  }
+
+  get ammoCount() {
+    return this._ammoCount;
   }
 
   fire() {
-    console.log("fire");
     const angle = Phaser.Math.Angle.BetweenPoints(
       this,
       this.target?.body?.center
     );
-    console.log("fire", angle);
     if (angle === null) return;
     this.rotation = angle;
-    console.log("rotation", this.rotation, angle);
     const proj: Projectile = this.scene.projectiles.getFirstDead(
       true,
       this.x,
       this.y,
       "projectile"
     );
-    console.log("Firing angle (deg):", Phaser.Math.RadToDeg(angle));
+    this.status = TurretStatus.firing;
+    // console.log("Firing angle (deg):", Phaser.Math.RadToDeg(angle));
 
     proj.initProj(this.x, this.y, this.currentAmmoData.speed, angle);
-    this.ammoCount--;
+    this.ammoCount = this.ammoCount - 1;
 
     drawTrajectory(
       this.scene,
@@ -101,7 +117,6 @@ export class Turret extends Phaser.GameObjects.Image {
       this.status = TurretStatus.empty;
       return;
     }
-
     if (!this.target) {
       this.findTarget();
     }
@@ -110,12 +125,16 @@ export class Turret extends Phaser.GameObjects.Image {
       this.status = TurretStatus.idle;
       return;
     }
-    if (!this.target.active) {
-      this.target = undefined;
-    }
+    const distance = Phaser.Math.Distance.BetweenPoints(
+      this.target.body?.center,
+      this.pos
+    );
 
-    if (!this.target) {
+    // console.log("distance", distance);
+    if (!this.target.active || distance > this.turretConfig.range) {
+      this.target = undefined;
       this.status = TurretStatus.idle;
+      return;
     }
 
     if (this.fireCooldown > 0) return;
@@ -124,7 +143,7 @@ export class Turret extends Phaser.GameObjects.Image {
     this.fireCooldown = this.turretConfig.fireRate;
   }
 
-  findTarget() {
+  private findTarget() {
     const closestEnemy = this.scene.physics.closest(
       this,
       this.scene.units
@@ -132,10 +151,14 @@ export class Turret extends Phaser.GameObjects.Image {
         .filter(
           (obj) =>
             obj.active &&
-            Phaser.Math.Distance.BetweenPoints(obj.body?.position, this) <
+            Phaser.Math.Distance.BetweenPoints(obj.body?.center, this.pos) <
               this.turretConfig.range
         )
     );
     if (closestEnemy) this.target = closestEnemy;
+  }
+
+  getAmmoStatus() {
+    return `${this.ammoCount}/${this.turretConfig.ammoMaxLoad}`;
   }
 }
