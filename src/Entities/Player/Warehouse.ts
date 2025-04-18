@@ -5,9 +5,9 @@ type AmmoListener = (amount: number) => void;
 export class Warehouse {
   private static instance: Warehouse;
 
-  private listeners: Map<string, AmmoListener[]>;
+  private listeners: Map<string, AmmoListener[]> = new Map();
 
-  ammoData: AllAmmoData;
+  private ammoData: AllAmmoData;
 
   private inventory: Record<TurretType, Record<string, number>> = {
     machineGun: {},
@@ -24,6 +24,7 @@ export class Warehouse {
     }
     return Warehouse.instance;
   }
+
   subscribe(key: string, callback) {
     if (!this.listeners.has(key)) {
       this.listeners.set(key, []);
@@ -31,16 +32,17 @@ export class Warehouse {
     this.listeners.get(key)?.push(callback);
   }
 
-  init(ammoData: AllAmmoData) {
+  initiateState(ammoData: AllAmmoData) {
     this.listeners = new Map();
     this.ammoData = ammoData;
 
     for (const turret in ammoData) {
       console.log("turret", turret);
       for (const variant in ammoData[turret as TurretType]) {
-        this.inventory[turret as TurretType][variant] = 0;
+        this.inventory[turret as TurretType][variant] = 100;
       }
     }
+    console.log("Warehouse Init", this.inventory);
   }
   private notify(key: string, value: number) {
     const listeners = this.listeners.get(key);
