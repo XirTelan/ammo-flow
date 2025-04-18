@@ -2,7 +2,7 @@
   "ammo": {
     "artillery": {
       "default": {
-        "speed": 1500,
+        "speed": 100,
         "damage": 600,
         "damageType": "explosive",
         "splashRadius": 10

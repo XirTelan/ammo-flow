@@ -6,6 +6,11 @@
         "type": "json",
         "key": "ammo",
         "url": "ammo.json"
+      },
+      {
+        "type": "json",
+        "key": "turrets",
+        "url": "turrets.json"
       }
     ]
   },
@@ -15,6 +20,17 @@
       {
         "type": "image",
         "key": "projectile",
+        "url": "projectile.png"
+      },
+      {
+        "type": "image",
+        "key": "pixel_proj",
+        "url": "pixel_proj.png"
+      },
+
+      {
+        "type": "image",
+        "key": "projectile_base",
         "url": "projectile_base.png"
       },
       {
@@ -26,6 +42,11 @@
         "type": "image",
         "key": "ui",
         "url": "ui.png"
+      },
+      {
+        "type": "image",
+        "key": "base",
+        "url": "base.png"
       }
     ]
   },
