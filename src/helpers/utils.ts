@@ -1,27 +1,3 @@
-export function getFiringAngle(
-  startX: number,
-  startY: number,
-  targetX: number,
-  targetY: number,
-  speed: number,
-  gravityY: number
-) {
-  const dx = targetX - startX;
-  const dy = targetY - startY;
-
-  const g = gravityY;
-  const s = speed;
-
-  const part = s ** 4 - g * (g * dx * dx + 2 * dy * s * s);
-  if (part < 0) return null;
-
-  const root = Math.sqrt(part);
-
-  const angle1 = Math.atan((s * s + root) / (g * dx));
-  const angle2 = Math.atan((s * s - root) / (g * dx));
-
-  return -angle2;
-}
 
 export function drawTrajectory(
   scene: Phaser.Scene,

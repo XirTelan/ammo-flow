@@ -1,1 +1,1 @@
-export const GRAVITY = 1500;
+export const GRAVITY = 0;

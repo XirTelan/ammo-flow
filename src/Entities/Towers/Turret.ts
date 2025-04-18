@@ -1,6 +1,6 @@
 import { Projectile } from "../Projectile";
 import { Game } from "../../scenes/Game";
-import { drawTrajectory, getFiringAngle } from "../../helpers/utils";
+import { drawTrajectory } from "../../helpers/utils";
 import { GRAVITY } from "../../helpers/config";
 import { Warehouse } from "../Player/Warehouse";
 import { AmmoVariant, TurretType } from "../../helpers/types";
@@ -14,6 +14,7 @@ export class Turret extends Phaser.GameObjects.Image {
   target?: Phaser.GameObjects.GameObject;
 
   turretType: TurretType;
+  ammoCount: number;
   ammoType: string;
   currentAmmoData: AmmoVariant;
 
@@ -24,14 +25,13 @@ export class Turret extends Phaser.GameObjects.Image {
     turretType: TurretType,
     ammoType: string
   ) {
-    super(scene, x, y, "");
+    super(scene, x, y, turretType);
+    scene.add.existing(this);
     this.pos = { x, y };
     this.warehouse = Warehouse.getInstance();
     this.turretType = turretType;
     this.ammoType = ammoType;
     this.scene = scene;
-
-    scene.add.rectangle(x, y, 50, 50, 0xff0000);
 
     this.setAmmoType(ammoType);
   }
@@ -39,56 +39,32 @@ export class Turret extends Phaser.GameObjects.Image {
   fire() {
     console.log("fire");
 
-    console.log("ammodata");
-
-    const angle = calculateFiringAngle(
-      new Phaser.Math.Vector2(this.x, this.y),
-      this.target?.body?.position,
-      this.currentAmmoData.speed,
-      GRAVITY,
-      true
+    const angle = Phaser.Math.Angle.BetweenPoints(
+      this,
+      this.target?.body?.position
     );
 
-    // const angle = getFiringAngle(
-    //   this.x,
-    //   this.y,
-    //   predicted.x,
-    //   predicted.y,
-    //   this.currentAmmoData.speed,
-    //   GRAVITY
-    // );
-    // const angle = Phaser.Math.Angle.Between(
-    //   this.x,
-    //   this.y,
-    //   predicted.x,
-    //   predicted.y
-    // );
-    console.log("angle", angle);
-
     if (angle === null) return;
-
-    const proj: Projectile = this.scene.projectiles.get(
+    this.rotation = angle;
+    const proj: Projectile = this.scene.projectiles.getFirstDead(
+      true,
       this.x,
       this.y,
       "projectile"
     );
-    console.log("Firing angle (deg):", Phaser.Math.RadToDeg(-angle));
-    // angle in radians
-    // this.scene.add.circle(predicted.x, predicted.y, 4, 0xff0000);
+    console.log("Firing angle (deg):", Phaser.Math.RadToDeg(angle));
 
-    proj.initProj(this.x, this.y, this.currentAmmoData.speed, -angle);
+    proj.initProj(this.x, this.y, this.currentAmmoData.speed, angle);
 
-    drawTrajectory(
-      this.scene,
-      this.x,
-      this.y,
-      -angle,
-      this.currentAmmoData.speed,
-      GRAVITY
-    ); // 💥
+    // drawTrajectory(
+    //   this.scene,
+    //   this.x,
+    //   this.y,
+    //   angle,
+    //   this.currentAmmoData.speed,
+    //   GRAVITY
+    // );
     this.warehouse.consumeAmmo(this.turretType, this.ammoType, 1);
-    // const p = this.projectiles.get(x, y, "bullet");
-    // new Projectile(this.scene, this.pos.x + 50, this.pos.y);
   }
 
   setAmmoType(ammoType: string) {
@@ -133,36 +109,4 @@ export class Turret extends Phaser.GameObjects.Image {
     // console.log("search result", closestEnemy);
     if (closestEnemy) this.target = closestEnemy;
   }
-}
-
-function calculateFiringAngle(
-  firePoint: Phaser.Math.Vector2,
-  targetPoint: Phaser.Math.Vector2,
-  firePower: number,
-  gravity: number,
-  low: boolean
-): number | null {
-  const v = firePower;
-  const g = gravity;
-
-  console.log(firePoint, targetPoint);
-
-  const y = firePoint.y - targetPoint.y;
-
-  const x = Math.abs(targetPoint.x - firePoint.x);
-
-  console.log(`Y: ${y} / X: ${x}`);
-  console.log(`World pos: target ${targetPoint} / firePoint ${firePoint}`);
-
-  let sqrt = v * v * v * v - g * (g * x * x + 2 * y * v * v);
-  if (sqrt < 0) {
-    return null;
-  }
-
-  sqrt = Math.sqrt(sqrt);
-
-  const angleMaxRad = Math.atan((v * v + sqrt) / (g * x));
-  const angleMinRad = Math.atan((v * v - sqrt) / (g * x));
-
-  return low ? angleMinRad : angleMaxRad;
 }
