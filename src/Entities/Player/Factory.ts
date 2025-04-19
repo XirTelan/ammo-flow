@@ -16,15 +16,15 @@ export class Factory {
     this.ammoType = ammoType;
   }
 
-  update(time: number, delta: number) {
-    this.productionCd -= delta / 1000;
+  update(_time: number, delta: number) {
+    if (this.activeWorkers == 0) return;
+    this.productionCd -= (delta / 1000) * this.activeWorkers;
     if (this.productionCd > 0) return;
 
     this.produce();
     this.productionCd = this.productionRate;
   }
   produce() {
-    this.warehouse.addAmmo(this.turretType, this.ammoType, 10);
-    this.warehouse.addAmmo("machineGun", this.ammoType, 10);
+    this.warehouse.addAmmo(this.turretType, this.ammoType, 1);
   }
 }

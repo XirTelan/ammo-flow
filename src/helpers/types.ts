@@ -14,12 +14,20 @@ export type TurretType =
   | "railgun"
   | "artillery";
 
+export type FactoriesConfig = {
+  [key in TurretType]: FactoryStats;
+};
+
+export type FactoryStats = {
+  productionRate: number;
+};
+
 export type AmmoType = {
   [variant: string]: AmmoVariant;
 };
 
 export type AllAmmoData = {
-  [T in TurretType]: AmmoType;
+  [key in TurretType]: AmmoType;
 };
 
 export interface AmmoVariant {
@@ -31,3 +39,10 @@ export interface AmmoVariant {
   splashRadius?: number;
   tracking?: boolean;
 }
+
+export type TurretConfig = {
+  range: number;
+  fireRate: number;
+  ammoSizeLoad: number;
+  ammoMaxLoad: number
+};

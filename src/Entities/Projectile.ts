@@ -7,7 +7,6 @@ export class Projectile extends Phaser.Physics.Arcade.Image {
     super(scene, x, y, "projectile");
     this.setScale(0.5);
     this.scene = scene;
-    console.log("ammo");
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.postFX.addBloom(0x0ffffff, 1, 1, 1.5, 4);

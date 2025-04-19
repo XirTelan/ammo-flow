@@ -43,7 +43,6 @@ export class Game extends Scene {
 
     this.physics.world.on("worldbounds", (body) => {
       const obj = body.gameObject as Phaser.Physics.Arcade.Image;
-      console.log("hit bound", body, obj);
       obj.disableBody(true, true);
     });
 
