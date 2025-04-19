@@ -5,64 +5,74 @@
         "speed": 100,
         "damage": 600,
         "damageType": "explosive",
-        "splashRadius": 10
+        "splashRadius": 10,
+        "rangeMod": 0
       }
     },
     "machineGun": {
       "default": {
         "speed": 1000,
         "damage": 20,
-        "damageType": "kinetic"
+        "damageType": "kinetic",
+        "rangeMod": 0
       },
       "incendiary": {
         "speed": 680,
         "damage": 18,
         "damageType": "fire",
-        "statusEffect": "burn"
+        "statusEffect": "burn",
+        "rangeMod": 0
       },
       "armorPiercing": {
         "speed": 720,
         "damage": 25,
         "damageType": "kinetic",
-        "armorPenetration": 0.4
+        "armorPenetration": 0.4,
+        "rangeMod": 0
       }
     },
     "sniper": {
       "default": {
         "speed": 1200,
         "damage": 80,
-        "damageType": "kinetic"
+        "damageType": "kinetic",
+        "rangeMod": 0
       },
       "explosive": {
         "speed": 1000,
         "damage": 60,
         "damageType": "explosive",
-        "splashRadius": 2.5
+        "splashRadius": 2.5,
+        "rangeMod": 0
       },
       "emp": {
         "speed": 950,
         "damage": 20,
         "damageType": "electric",
-        "statusEffect": "disable"
+        "statusEffect": "disable",
+        "rangeMod": 0
       },
       "armorPiercing": {
         "speed": 720,
         "damage": 25,
         "damageType": "kinetic",
-        "armorPenetration": 0.4
+        "armorPenetration": 0.4,
+        "rangeMod": 0
       }
     },
     "plasmaCannon": {
       "default": {
         "speed": 500,
         "damage": 50,
-        "damageType": "energy"
+        "damageType": "energy",
+        "rangeMod": 0
       },
       "overcharged": {
         "speed": 450,
         "damage": 90,
         "damageType": "energy",
-        "statusEffect": "melt"
+        "statusEffect": "melt",
+        "rangeMod": 0
       }
     },
     "flakCannon": {
@@ -70,13 +80,15 @@
         "speed": 400,
         "damage": 35,
         "damageType": "kinetic",
-        "splashRadius": 1.5
+        "splashRadius": 1.5,
+        "rangeMod": 0
       },
       "antiAir": {
         "speed": 420,
         "damage": 30,
         "damageType": "kinetic",
-        "tracking": true
+        "tracking": true,
+        "rangeMod": 0
       }
     },
     "railgun": {
@@ -84,13 +96,15 @@
         "speed": 1500,
         "damage": 120,
         "damageType": "kinetic",
-        "armorPenetration": 0.9
+        "armorPenetration": 0.9,
+        "rangeMod": 0
       },
       "shock": {
         "speed": 1400,
         "damage": 90,
         "damageType": "electric",
-        "statusEffect": "stun"
+        "statusEffect": "stun",
+        "rangeMod": 0
       }
     }
   }
