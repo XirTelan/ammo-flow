@@ -2,11 +2,13 @@
   "artillery": {
     "range": 1200,
     "fireRate": 5,
-    "ammoSizeLoad": 10
+    "ammoSizeLoad": 5,
+    "ammoMaxLoad": 20
   },
   "machineGun": {
     "range": 600,
     "fireRate": 0.1,
-    "ammoSizeLoad": 100
+    "ammoSizeLoad": 100,
+    "ammoMaxLoad": 1000
   }
 }
