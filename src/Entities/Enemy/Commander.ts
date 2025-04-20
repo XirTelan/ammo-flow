@@ -16,10 +16,9 @@ export class Commander {
       const angle = Phaser.Math.DegToRad((360 / 30) * i);
       const x = 1024 + 800 * Math.cos(angle);
       const y = 1024 + 800 * Math.sin(angle);
-      const unit = new Unit(this.scene, x, y, "light");
-      this.events.emit("newUnit", unit);
-      this.units.push(unit);
-      this.scene.units.add(unit);
+      let unit = this.scene.units.get(x, y, "light") as Unit | null;
+      if (!unit) return;
+      unit.initState(this.scene, x, y);
     }
   }
 }

@@ -47,6 +47,7 @@ export class Game extends Scene {
     });
 
     this.units = this.add.group({
+      classType: Unit,
       runChildUpdate: true,
     });
     this.physics.add.overlap(this.projectiles, this.units, (obj1, obj2) => {
