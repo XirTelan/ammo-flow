@@ -35,6 +35,7 @@ export interface AmmoVariant {
   damage: number;
   damageType: DamageType;
   statusEffect?: string;
+  rangeMod: number;
   armorPenetration?: number;
   splashRadius?: number;
   tracking?: boolean;
@@ -44,5 +45,5 @@ export type TurretConfig = {
   range: number;
   fireRate: number;
   ammoSizeLoad: number;
-  ammoMaxLoad: number
+  ammoMaxLoad: number;
 };

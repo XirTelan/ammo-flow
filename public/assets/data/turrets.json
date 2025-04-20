@@ -6,7 +6,7 @@
     "ammoMaxLoad": 20
   },
   "machineGun": {
-    "range": 600,
+    "range": 400,
     "fireRate": 0.1,
     "ammoSizeLoad": 100,
     "ammoMaxLoad": 1000

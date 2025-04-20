@@ -1,4 +1,3 @@
-
 export function drawTrajectory(
   scene: Phaser.Scene,
   x: number,
@@ -32,4 +31,9 @@ export function drawTrajectory(
   g.strokePath();
 
   scene.time.delayedCall(3000, () => g.destroy(), [], scene);
+}
+export function formatTime(seconds: number) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.ceil(seconds % 60);
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
