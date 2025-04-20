@@ -2,6 +2,7 @@ import { Scene } from "phaser";
 import { Projectile } from "../Entities/Projectile";
 import { Unit } from "../Entities/Units/Unit";
 import { ControlPanel } from "../Entities/Player/ControlPanel";
+import { Commander } from "../Entities/Enemy/Commander";
 
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
@@ -9,6 +10,7 @@ export class Game extends Scene {
   msg_text: Phaser.GameObjects.Text;
 
   controlPanel: ControlPanel;
+  commander: Commander;
 
   projectiles: Phaser.GameObjects.Group;
   units: Phaser.GameObjects.Group;
@@ -23,16 +25,11 @@ export class Game extends Scene {
 
   create() {
     this.scene.launch("GameUi");
-    this.controlPanel = new ControlPanel(this);
     this.setupMap();
     this.setupPhysics();
-    this.initGame();
-    this.time.delayedCall(0, () => this.events.emit("gameReady"));
-  }
-  private initGame() {
     this.controlPanel = new ControlPanel(this);
-
-    this.devTest();
+    this.commander = new Commander(this);
+    this.time.delayedCall(0, () => this.events.emit("gameReady"));
   }
 
   private setupPhysics() {
@@ -52,7 +49,12 @@ export class Game extends Scene {
     this.units = this.add.group({
       runChildUpdate: true,
     });
-    this.physics.add.overlap(this.projectiles, this.units);
+    this.physics.add.overlap(this.projectiles, this.units, (obj1, obj2) => {
+      const unit = obj1 as Unit;
+      const proj = obj2 as Projectile;
+
+      unit.getHit(proj.ammoData.damage);
+    });
   }
   private setupMap() {
     this.add.image(0, 0, "map").setOrigin(0);
@@ -82,30 +84,17 @@ export class Game extends Scene {
         _deltaX: number,
         deltaY: number
       ) => {
-        const zoomFactor = 0.001;
+        const zoomFactor = 0.002;
         mapCam.zoom = Phaser.Math.Clamp(
           mapCam.zoom - deltaY * zoomFactor,
           0.5,
           2
         );
+        this.events.emit("mapZoom", mapCam.zoom);
       }
     );
     this.cameras.main.setBounds(0, 0, 2048, 2048);
 
     mapCam.setScroll(mapCam.width / 2, mapCam.height / 2);
-  }
-
-  update(time: number, delta: number): void {
-    this.controlPanel.update(time, delta);
-  }
-
-  devTest() {
-    for (let i = 0; i < 30; i++) {
-      const angle = Phaser.Math.DegToRad((360 / 30) * i);
-      const x = 1024 + 800 * Math.cos(angle);
-      const y = 1024 + 800 * Math.sin(angle);
-
-      this.units.add(new Unit(this, x, y, "light"));
-    }
   }
 }
