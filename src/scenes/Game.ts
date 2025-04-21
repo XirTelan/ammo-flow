@@ -16,9 +16,6 @@ export class Game extends Scene {
   units: Phaser.GameObjects.Group;
   ground: Phaser.Physics.Arcade.StaticGroup;
 
-  startPointer: Phaser.Types.Math.Vector2Like;
-  startScroll: Phaser.Types.Math.Vector2Like;
-
   constructor() {
     super("Game");
   }
@@ -33,7 +30,12 @@ export class Game extends Scene {
   }
 
   private setupPhysics() {
-    this.physics.world.setBounds(0, 0, 2048, 2048);
+    this.physics.world.setBounds(
+      -1024,
+      -1024,
+      2048 + 1024 * 2,
+      2048 + 1024 * 2
+    );
 
     this.projectiles = this.physics.add.group({
       classType: Projectile,
@@ -43,6 +45,7 @@ export class Game extends Scene {
 
     this.physics.world.on("worldbounds", (body: Phaser.Physics.Arcade.Body) => {
       const obj = body.gameObject as Phaser.Physics.Arcade.Image;
+      // console.log("hit world bounds", obj.x, obj.y);
       obj.disableBody(true, true);
     });
 
@@ -64,36 +67,6 @@ export class Game extends Scene {
 
     mapCam.setViewport(448, 28, 1024, 1024);
 
-    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      this.startPointer = { x: pointer.x, y: pointer.y };
-      this.startScroll = { x: mapCam.scrollX, y: mapCam.scrollY };
-    });
-
-    this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.isDown && this.startPointer) {
-        const dx = pointer.x - this.startPointer.x;
-        const dy = pointer.y - this.startPointer.y;
-        mapCam.scrollX = this.startScroll.x - dx / mapCam.zoom;
-        mapCam.scrollY = this.startScroll.y - dy / mapCam.zoom;
-      }
-    });
-    this.input.on(
-      "wheel",
-      (
-        _pointer: Phaser.Input.Pointer,
-        _gameObjects: Phaser.GameObjects.GameObject[],
-        _deltaX: number,
-        deltaY: number
-      ) => {
-        const zoomFactor = 0.002;
-        mapCam.zoom = Phaser.Math.Clamp(
-          mapCam.zoom - deltaY * zoomFactor,
-          0.5,
-          2
-        );
-        this.events.emit("mapZoom", mapCam.zoom);
-      }
-    );
     this.cameras.main.setBounds(0, 0, 2048, 2048);
 
     mapCam.setScroll(mapCam.width / 2, mapCam.height / 2);
