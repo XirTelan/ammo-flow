@@ -6,6 +6,22 @@ export type DamageType =
   | "energy";
 export type Warehouse = {};
 
+export type UnitType = "light" | "medium" | "heavy" | "air" | "artillery";
+export type UnitCount = {
+  [key in UnitType]: number;
+};
+export type UnitConfig = {
+  [key in UnitType]: Unit;
+};
+
+export type Unit = {
+  hp: number;
+  speed: number;
+  damage: number;
+  range: number;
+  armor: number;
+};
+
 export type TurretType =
   | "machineGun"
   | "sniper"
@@ -13,6 +29,14 @@ export type TurretType =
   | "flakCannon"
   | "railgun"
   | "artillery";
+
+export type TurretConfig = {
+  range: number;
+  fireRate: number;
+  ammoSizeLoad: number;
+  ammoMaxLoad: number;
+  spread: number;
+};
 
 export type FactoriesConfig = {
   [key in TurretType]: FactoryStats;
@@ -41,9 +65,7 @@ export interface AmmoVariant {
   tracking?: boolean;
 }
 
-export type TurretConfig = {
-  range: number;
-  fireRate: number;
-  ammoSizeLoad: number;
-  ammoMaxLoad: number;
+export type NextWave = {
+  units: UnitCount;
+  positions: { x: number; y: number }[];
 };
