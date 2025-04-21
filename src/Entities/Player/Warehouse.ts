@@ -1,11 +1,8 @@
 import { AllAmmoData, AmmoVariant, TurretType } from "../../helpers/types";
 
-type AmmoListener = (amount: number) => void;
-
 export class Warehouse {
   private static instance: Warehouse;
-
-  private listeners: Map<string, AmmoListener[]> = new Map();
+  events = new Phaser.Events.EventEmitter();
 
   private ammoData: AllAmmoData;
 
@@ -25,41 +22,28 @@ export class Warehouse {
     return Warehouse.instance;
   }
 
-  subscribe(key: string, callback) {
-    if (!this.listeners.has(key)) {
-      this.listeners.set(key, []);
-    }
-    this.listeners.get(key)?.push(callback);
-  }
-
   initiateState(ammoData: AllAmmoData) {
-    this.listeners = new Map();
     this.ammoData = ammoData;
 
     for (const turret in ammoData) {
-      console.log("turret", turret);
       for (const variant in ammoData[turret as TurretType]) {
         this.inventory[turret as TurretType][variant] = 100;
       }
     }
     console.log("Warehouse Init", this.inventory);
   }
-  private notify(key: string, value: number) {
-    const listeners = this.listeners.get(key);
-    listeners?.forEach((callback) => callback(value));
-  }
 
   addAmmo(turret: TurretType, variant: string, amount: number): void {
     if (!this.inventory[turret][variant]) this.inventory[turret][variant] = 0;
     this.inventory[turret][variant] += amount;
-    this.notify(`${turret}.${variant}`, this.inventory[turret][variant]);
+    this.events.emit(`${turret}.${variant}`, this.inventory[turret][variant]);
   }
 
   consumeAmmo(turret: TurretType, variant: string, amount: number): boolean {
     const current = this.inventory[turret][variant] || 0;
     if (current >= amount) {
       this.inventory[turret][variant] -= amount;
-      this.notify(`${turret}.${variant}`, this.inventory[turret][variant]);
+      this.events.emit(`${turret}.${variant}`, this.inventory[turret][variant]);
       return true;
     }
     return false;
