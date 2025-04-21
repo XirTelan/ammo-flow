@@ -1,48 +1,45 @@
 import { Scene } from "phaser";
-import { Warehouse } from "./Warehouse";
-import { Turret } from "../Towers/Turret";
-import { Factory } from "./Factory";
-import { Artillery } from "../Towers/Artillery";
-import { MachineGun } from "../Towers/MachineGun";
-import { Game } from "../../scenes/Game";
-import { AllAmmoData } from "../../helpers/types";
+import { Turret } from "../../Turrets/Turret";
+import { Artillery } from "../../Turrets/Artillery";
+import { MachineGun } from "../../Turrets/MachineGun";
+import { Game } from "../../../scenes/Game";
+import { AllAmmoData } from "../../../helpers/types";
+import { Warehouse } from "../Warehouse";
+import { Factory } from "../Factories/Factory";
 
-const BASETIME = 15;
+const BASETIME = 4;
 const FALLOFF = 0.9;
 const MINTIME = 5;
 export class ControlPanel {
   scene: Scene;
-  warehouse: Warehouse = Warehouse.getInstance();
+  warehouse: Warehouse;
   turrets: Turret[] = [];
   factories: Factory[] = [];
 
   private _workers = 1;
-  private _scientists = 0;
   private _health = 100;
   events: Phaser.Events.EventEmitter;
 
   private currentTime = 0;
-  private wave = 1;
+  wave = 1;
 
   text: Phaser.GameObjects.Text;
   constructor(scene: Game, wave = 1) {
+    this.scene = scene;
     this.events = new Phaser.Events.EventEmitter();
     this.currentTime = this.getWaveDelay(wave);
 
     const { ammo }: { ammo: AllAmmoData } = scene.cache.json.get("ammo");
-    Warehouse.getInstance().initiateState(ammo);
 
-    this.text = scene.add.text(90, 650, "Ammo: 0", {
-      fontSize: "16px",
-    });
+    this.warehouse = Warehouse.getInstance();
+    this.warehouse.initiateState(ammo);
 
-    this.warehouse.subscribe(`artillery.default`, (value) => {
-      this.text.text = value;
-    });
+    this.factories.push(new Factory(scene));
+    this.factories.push(new Factory(scene));
+    this.factories.push(new Factory(scene));
+    this.factories.push(new Factory(scene));
 
-    this.factories.push(new Factory(scene, "artillery", "default"));
-
-    this.turrets.push(new Artillery(scene, 1035, 850));
+    this.turrets.push(new MachineGun(scene, 1035, 850));
     this.turrets.push(new Artillery(scene, 830, 1020));
     this.turrets.push(new Artillery(scene, 1220, 1120));
     this.turrets.push(new MachineGun(scene, 991, 1200));
@@ -59,15 +56,7 @@ export class ControlPanel {
   }
   set workers(value: number) {
     this._workers = value;
-    this.events.emit("money", value);
-  }
-
-  get scientists() {
-    return this._scientists;
-  }
-  set scientists(value: number) {
-    this._scientists = value;
-    this.events.emit("score", value);
+    this.events.emit("workers", value);
   }
 
   get health() {
@@ -79,8 +68,7 @@ export class ControlPanel {
   }
 
   reset() {
-    this._workers = 0;
-    this._scientists = 0;
+    this._workers = 1;
     this.health = 100;
   }
 
@@ -92,12 +80,16 @@ export class ControlPanel {
     if (this.factories.length > 0)
       this.factories.forEach((factory) => factory.update(time, delta));
 
-    this.currentTime -= 0.1
-    this.events.emit("timerUpdate", this.currentTime);
+    this.currentTime -= 0.1;
     if (this.currentTime <= 0) {
       this.events.emit("waveStart", this.wave);
       this.wave = this.wave + 1;
       this.currentTime = this.getWaveDelay(this.wave);
     }
+    this.events.emit("timerUpdate", this.currentTime);
   }
+
+  createFactory() {}
+
+  createTurret() {}
 }

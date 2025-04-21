@@ -1,9 +1,8 @@
-import { Projectile } from "../Projectile";
+import { Projectile } from "../../Projectile";
 import { Game } from "../../scenes/Game";
-import { Warehouse } from "../Player/Warehouse";
 import { AmmoVariant, TurretConfig, TurretType } from "../../helpers/types";
-import { drawTrajectory } from "../../helpers/utils";
-import { Physics } from "phaser";
+import { colors } from "@/helpers/config";
+import { Warehouse } from "../Player/Warehouse";
 
 enum TurretStatus {
   "firing",
@@ -29,10 +28,11 @@ export class Turret extends Phaser.GameObjects.Image {
 
   currentAmmoData: AmmoVariant;
 
-  private _ammoCount: number = 10;
+  private _ammoCount: number = 1000;
   ammoType: string;
 
   private _status: TurretStatus = TurretStatus.idle;
+  fireRangeCircle: Phaser.GameObjects.Graphics;
 
   constructor(
     scene: Game,
@@ -42,6 +42,8 @@ export class Turret extends Phaser.GameObjects.Image {
     ammoType: string
   ) {
     super(scene, x, y, turretType);
+    this.scene = scene;
+
     scene.add.existing(this);
 
     this.pos = { x, y };
@@ -50,8 +52,7 @@ export class Turret extends Phaser.GameObjects.Image {
     this.turretConfig = scene.cache.json.get("turrets")[turretType];
 
     this.ammoType = ammoType;
-
-    this.scene = scene;
+    this.fireRangeCircle = this.scene.add.graphics();
 
     this.setAmmoType(ammoType);
   }
@@ -69,7 +70,7 @@ export class Turret extends Phaser.GameObjects.Image {
   }
   set ammoCount(value: number) {
     this._ammoCount = value;
-    this.emit("ammoChange", this.getAmmoStatus());
+    this.emit("ammoChange", this._ammoCount);
   }
 
   get fireRange() {
@@ -80,11 +81,14 @@ export class Turret extends Phaser.GameObjects.Image {
   }
 
   fire() {
-    const angle = Phaser.Math.Angle.BetweenPoints(
+    let angle = Phaser.Math.Angle.BetweenPoints(
       this,
       this.target?.body?.center
     );
     if (angle === null) return;
+
+    const spread = this.turretConfig.spread;
+    angle = angle + Phaser.Math.DegToRad(Phaser.Math.Between(-spread, spread));
     this.rotation = angle;
     const proj: Projectile = this.scene.projectiles.getFirstDead(
       true,
@@ -93,19 +97,9 @@ export class Turret extends Phaser.GameObjects.Image {
       "projectile"
     );
     this.status = TurretStatus.firing;
-    // console.log("Firing angle (deg):", Phaser.Math.RadToDeg(angle));
 
     proj.initProj(this.x, this.y, angle, this.currentAmmoData);
     this.ammoCount = this.ammoCount - 1;
-
-    drawTrajectory(
-      this.scene,
-      this.x,
-      this.y,
-      angle,
-      this.currentAmmoData.speed,
-      0
-    );
   }
 
   setAmmoType(ammoType: string) {
@@ -113,10 +107,10 @@ export class Turret extends Phaser.GameObjects.Image {
     if (!ammoData) return;
 
     this.currentAmmoData = ammoData;
-    console.log("current Ammo data", this.currentAmmoData);
   }
-  preUpdate(time: number, delta: number) {
+  preUpdate(_: number, delta: number) {
     this.fireCooldown -= delta / 1000;
+    this.emit("cd", this.fireCooldown / this.turretConfig.fireRate);
 
     if (this.ammoCount == 0) {
       this.status = TurretStatus.empty;
@@ -135,10 +129,8 @@ export class Turret extends Phaser.GameObjects.Image {
       this.pos
     );
 
-    // console.log("distance", distance);
     if (!this.target.active || distance > this.fireRange) {
       this.target = undefined;
-      this.status = TurretStatus.idle;
       return;
     }
 
@@ -146,6 +138,38 @@ export class Turret extends Phaser.GameObjects.Image {
 
     this.fire();
     this.fireCooldown = this.turretConfig.fireRate;
+  }
+  showFireRange() {
+    this.fireRangeCircle.lineStyle(4, colors.backgroundAccent.number, 0.8);
+    this.fireRangeCircle.strokeCircle(this.pos.x, this.pos.y, this.fireRange);
+    this.fireRangeCircle.lineStyle(2, colors.backgroundAccent.number, 0.5);
+    this.fireRangeCircle.lineBetween(
+      this.pos.x,
+      this.pos.y,
+      this.pos.x - this.fireRange,
+      this.pos.y
+    );
+    this.fireRangeCircle.lineBetween(
+      this.pos.x,
+      this.pos.y,
+      this.pos.x + this.fireRange,
+      this.pos.y
+    );
+    this.fireRangeCircle.lineBetween(
+      this.pos.x,
+      this.pos.y,
+      this.pos.x,
+      this.pos.y - this.fireRange
+    );
+    this.fireRangeCircle.lineBetween(
+      this.pos.x,
+      this.pos.y,
+      this.pos.x,
+      this.pos.y + this.fireRange
+    );
+  }
+  hideFireRange() {
+    this.fireRangeCircle.clear();
   }
 
   private findTarget() {
@@ -161,9 +185,5 @@ export class Turret extends Phaser.GameObjects.Image {
         )
     );
     if (closestEnemy) this.target = closestEnemy;
-  }
-
-  getAmmoStatus() {
-    return `${this.ammoCount}/${this.turretConfig.ammoMaxLoad}`;
   }
 }

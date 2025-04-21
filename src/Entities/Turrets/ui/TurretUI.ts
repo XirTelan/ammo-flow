@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
-import { Turret } from "../../Entities/Towers/Turret";
-import { colors } from "../../helpers/config";
+import { Turret } from "../Turret";
+import { colors } from "@/helpers/config";
 
 export class TurretUI {
   ammoCount: Phaser.GameObjects.Text;
@@ -77,7 +77,7 @@ export class TurretUI {
     const fillBar = scene.add
       .rectangle(190, 70, 5, 1, 0xffffff)
       .setOrigin(0.5, 1);
-    turret.on("cd", (value) => {
+    turret.on("cd", (value: number) => {
       const pct = Phaser.Math.Clamp(value, 0, 1);
       fillBar.height = 30 * (1 - pct);
       fillBar.y = 70 - fillBar.height;

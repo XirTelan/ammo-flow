@@ -1,4 +1,4 @@
-import { AllAmmoData, AmmoVariant, TurretType } from "../../helpers/types";
+import { AllAmmoData, TurretType, AmmoVariant } from "../../../helpers/types";
 
 export class Warehouse {
   private static instance: Warehouse;
@@ -8,7 +8,6 @@ export class Warehouse {
 
   private inventory: Record<TurretType, Record<string, number>> = {
     machineGun: {},
-    sniper: {},
     plasmaCannon: {},
     flakCannon: {},
     railgun: {},

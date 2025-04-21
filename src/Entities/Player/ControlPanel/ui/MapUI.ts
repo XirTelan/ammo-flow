@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
-import { Game } from "../../scenes/Game";
-import { colors } from "../../helpers/config";
+import { Game } from "../../../../scenes/Game";
+import { colors } from "../../../../helpers/config";
 
 const startPoing = 140;
 
@@ -53,17 +53,22 @@ export class MapUI {
       duration: 100,
     });
   }
+  private isOutBound(x: number, y: number) {
+    return x < 450 || x > 1450 || y < 50 || y > 1050;
+  }
 
   private mapMovment() {
     const uiScene = this.uiScene;
     const mapCam = this.gameScene.cameras.main;
 
     uiScene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (this.isOutBound(pointer.x, pointer.y)) return;
       this.startPointer = { x: pointer.x, y: pointer.y };
       this.startScroll = { x: mapCam.scrollX, y: mapCam.scrollY };
     });
 
     uiScene.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+      if (this.isOutBound(pointer.x, pointer.y)) return;
       if (pointer.isDown && this.startPointer) {
         const dx = pointer.x - this.startPointer.x;
         const dy = pointer.y - this.startPointer.y;
@@ -74,11 +79,12 @@ export class MapUI {
     uiScene.input.on(
       "wheel",
       (
-        _pointer: Phaser.Input.Pointer,
+        pointer: Phaser.Input.Pointer,
         _gameObjects: Phaser.GameObjects.GameObject[],
         _deltaX: number,
         deltaY: number
       ) => {
+        if (this.isOutBound(pointer.x, pointer.y)) return;
         const zoomFactor = 0.002;
         mapCam.zoom = Phaser.Math.Clamp(
           mapCam.zoom - deltaY * zoomFactor,

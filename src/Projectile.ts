@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { AmmoVariant } from "../helpers/types";
+import { AmmoVariant } from "./helpers/types";
 
 export class Projectile extends Phaser.Physics.Arcade.Image {
   scene: Scene;
@@ -11,7 +11,7 @@ export class Projectile extends Phaser.Physics.Arcade.Image {
     this.scene = scene;
     scene.add.existing(this);
     scene.physics.add.existing(this);
-    this.postFX.addBloom(0x0ffffff, 1, 1, 1.5, 4);
+    // this.postFX.addBloom(0x0ffffff, 1, 1, 1.5, 4);
   }
   initProj(x: number, y: number, angle: number, ammoData: AmmoVariant) {
     this.enableBody(true, x, y);

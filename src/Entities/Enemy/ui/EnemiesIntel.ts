@@ -1,8 +1,8 @@
 import { Scene } from "phaser";
-import { Commander } from "../../Entities/Enemy/Commander";
+import { Commander } from "../Commander";
 
-import { colors } from "../../helpers/config";
-import { NextWave, UnitConfig, UnitType } from "../../helpers/types";
+import { colors } from "../../../helpers/config";
+import { NextWave, UnitConfig, UnitType } from "../../../helpers/types";
 
 export class EnemiesIntel {
   commander: Commander;
@@ -32,7 +32,7 @@ export class EnemiesIntel {
 
     this.panels = this.scene.add.container(1485, 120);
 
-    const { units, positions } = wave;
+    const { units } = wave;
     let i = 0;
     for (const [key, count] of Object.entries(units)) {
       if (count == 0) continue;
