@@ -11,6 +11,11 @@
         "type": "json",
         "key": "turrets",
         "url": "turrets.json"
+      },
+      {
+        "type": "json",
+        "key": "units",
+        "url": "units.json"
       }
     ]
   },
@@ -55,8 +60,48 @@
     "files": [
       {
         "type": "image",
-        "key": "light",
+        "key": "u_air",
+        "url": "air.png"
+      },
+      {
+        "type": "image",
+        "key": "u_artillery",
+        "url": "artillery.png"
+      },
+      {
+        "type": "image",
+        "key": "u_light",
         "url": "light.png"
+      },
+      {
+        "type": "image",
+        "key": "u_medium",
+        "url": "medium.png"
+      },
+      {
+        "type": "image",
+        "key": "u_heavy",
+        "url": "light.png"
+      }
+    ]
+  },
+  {
+    "path": "assets/textures/icons",
+    "files": [
+      {
+        "type": "image",
+        "key": "icon_reload",
+        "url": "reload.png"
+      },
+      {
+        "type": "image",
+        "key": "icon_reload_mask",
+        "url": "reload_mask.png"
+      },
+      {
+        "type": "image",
+        "key": "icon_armor",
+        "url": "armor.png"
       }
     ]
   },
