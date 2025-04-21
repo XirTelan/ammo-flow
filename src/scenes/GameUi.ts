@@ -1,9 +1,11 @@
 import { Scene } from "phaser";
 import { Game } from "./Game";
-import { Turret } from "../Entities/Towers/Turret";
-import { TurretUI } from "../ui/ui-ingame/TurretUI";
+import { TurretUI } from "../entities/Turrets/ui/TurretUI";
 import { formatTime } from "../helpers/utils";
-import { MapUI } from "../ui/ui-ingame/MapUI";
+import { MapUI } from "../entities/Player/ControlPanel/ui/MapUI";
+import { EnemiesIntel } from "../entities/Enemy/ui/EnemiesIntel";
+import { FactoriesPanel } from "../entities/Player/Factories/ui/FactoriesPanel";
+import { colors } from "../helpers/config";
 
 export class GameUi extends Scene {
   gameScene: Game;
@@ -16,7 +18,6 @@ export class GameUi extends Scene {
     this.gameScene.events.on(
       "gameReady",
       () => {
-        console.log("asd", this.gameScene);
         this.initialLoad();
       },
       this
@@ -72,46 +73,33 @@ export class GameUi extends Scene {
     // this.add.image(1575, 0, "ui").setOrigin(0);
 
     //dummy btns
-    this.add.rectangle(1475, 400, 120, 40, 0x6d6a59, 1).setOrigin(0);
-    this.add.rectangle(1475, 450, 120, 40, 0x6d6a59, 1).setOrigin(0);
-    this.add.rectangle(1475, 500, 120, 40, 0x6d6a59, 1).setOrigin(0);
-    this.add.rectangle(1475, 550, 120, 40, 0x6d6a59, 1).setOrigin(0);
-
-    this.add.rectangle(1600, 400, 120, 40, 0x6d6a59, 1).setOrigin(0);
-    this.add.rectangle(1600, 450, 120, 40, 0x6d6a59, 1).setOrigin(0);
-    this.add.rectangle(1600, 500, 120, 40, 0x6d6a59, 1).setOrigin(0);
-    this.add.rectangle(1600, 550, 120, 40, 0x6d6a59, 1).setOrigin(0);
-    this.add.rectangle(1475, 600, 500, 500, 0x6d6a59, 1).setOrigin(0);
+    this.add
+      .rectangle(1475, 300, 500, 800, colors.overlay.number, 1)
+      .setOrigin(0);
 
     //time controll
-    const stop = this.add.rectangle(1100, 20, 50, 40, 0x6d6a59, 1).setOrigin(0);
-    const slow = this.add.rectangle(1160, 20, 50, 40, 0x6d6a59, 1).setOrigin(0);
+    const stop = this.add.rectangle(1100, 0, 30, 30, 0x6d6a59, 1).setOrigin(0);
+    const slow = this.add.rectangle(1140, 0, 30, 30, 0x6d6a59, 1).setOrigin(0);
     const normal = this.add
-      .rectangle(1220, 20, 50, 40, 0x6d6a59, 1)
+      .rectangle(1180, 0, 30, 30, 0x6d6a59, 1)
       .setOrigin(0);
-    const speed = this.add
-      .rectangle(1280, 20, 50, 40, 0x6d6a59, 1)
-      .setOrigin(0);
+    const speed = this.add.rectangle(1220, 0, 30, 30, 0x6d6a59, 1).setOrigin(0);
     stop.setInteractive().on("pointerup", () => {
-      console.log("clicl");
       if (this.gameScene.scene.isPaused()) {
         this.gameScene.scene.resume();
       } else {
-        this.scene.pause("Game");
+        this.gameScene.scene.pause();
       }
     });
     slow.setInteractive().on("pointerup", () => {
-      console.log("click2");
       this.gameScene.physics.world.timeScale = 2;
       this.gameScene.time.timeScale = 1;
     });
     normal.setInteractive().on("pointerup", () => {
-      console.log("click2");
       this.gameScene.physics.world.timeScale = 1;
       this.gameScene.time.timeScale = 1;
     });
     speed.setInteractive().on("pointerup", () => {
-      console.log("click2");
       this.gameScene.physics.world.timeScale = 0.5;
       this.gameScene.time.timeScale = 2;
     });
@@ -120,14 +108,16 @@ export class GameUi extends Scene {
   private initialLoad() {
     this.scene.bringToTop();
     this.drawUi();
-    console.log("asd", this.gameScene);
-    const { turrets } = this.gameScene.controlPanel;
+
+    const { turrets, factories } = this.gameScene.controlPanel;
     const len = turrets.length;
     for (let i = 0; i < len; i++) {
-      new TurretUI(this, 20, 110 * i, turrets[i]);
+      new TurretUI(this, 10, 10 + 115 * i, turrets[i]);
     }
 
     new MapUI(this, this.gameScene);
+    new EnemiesIntel(this, this.gameScene.commander);
+    new FactoriesPanel(this, factories);
   }
 
   addTurretPanel() {}

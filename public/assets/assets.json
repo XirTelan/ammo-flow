@@ -16,6 +16,11 @@
         "type": "json",
         "key": "units",
         "url": "units.json"
+      },
+      {
+        "type": "json",
+        "key": "factories",
+        "url": "factories.json"
       }
     ]
   },

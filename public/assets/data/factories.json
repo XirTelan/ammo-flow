@@ -1,20 +1,26 @@
 {
   "machineGun": {
-    "productionRate": 1
+    "rate": 1,
+    "scale": 10
   },
   "sniper": {
-    "productionRate": 1
+    "rate": 1,
+    "scale": 10
   },
   "plasmaCannon": {
-    "productionRate": 1
+    "rate": 1,
+    "scale": 10
   },
   "flakCannon": {
-    "productionRate": 1
+    "rate": 1,
+    "scale": 10
   },
   "railgun": {
-    "productionRate": 1
+    "rate": 1,
+    "scale": 10
   },
   "artillery": {
-    "productionRate": 1
+    "rate": 5,
+    "scale": 2
   }
 }

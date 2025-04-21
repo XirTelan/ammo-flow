@@ -1,8 +1,8 @@
 import { Scene } from "phaser";
-import { Projectile } from "../Entities/Projectile";
-import { Unit } from "../Entities/Units/Unit";
-import { ControlPanel } from "../Entities/Player/ControlPanel";
-import { Commander } from "../Entities/Enemy/Commander";
+import { Projectile } from "../Projectile";
+import { ControlPanel } from "../entities/Player/ControlPanel/ControlPanel";
+import { Commander } from "../entities/Enemy/Commander";
+import { Unit } from "@/entities/Units/Unit";
 
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;

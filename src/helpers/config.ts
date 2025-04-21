@@ -2,7 +2,7 @@ export const GRAVITY = 0;
 
 export const colors = {
   background: { hex: "#C7B89A", number: 0xc7b89a },
-  backgroundAccent: { hex: "#ded7c5", number: 0xded7c5 },
+  backgroundAccent: { hex: "#ded7c5", number: 0xe6e8ec },
   overlay: { hex: "#6D6A59", number: 0x6d6a59 },
   textPrimary: { hex: "#ECE3C6", number: 0xece3c6 },
   textSecondary: { hex: "#A49C8E", number: 0xa49c8e },

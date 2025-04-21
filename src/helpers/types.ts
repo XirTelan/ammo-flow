@@ -24,7 +24,6 @@ export type Unit = {
 
 export type TurretType =
   | "machineGun"
-  | "sniper"
   | "plasmaCannon"
   | "flakCannon"
   | "railgun"

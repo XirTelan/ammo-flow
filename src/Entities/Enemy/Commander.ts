@@ -1,6 +1,6 @@
-import { NextWave, TurretType, UnitCount, UnitType } from "../../helpers/types";
-import { Game } from "../../scenes/Game";
-import { Unit } from "../Units/Unit";
+import { NextWave, UnitCount, UnitType } from "@/helpers/types";
+import { Game } from "@/scenes/Game";
+import { Unit } from "@/entities/Units/Unit";
 
 const waveTemplates = [
   {
@@ -164,7 +164,7 @@ export class Commander {
 
     return Array.from({ length: count }, () => {
       const corner = corners[Math.floor(Math.random() % corners.length)];
-      const offset = 100;
+      const offset = 200;
       return {
         x: corner.x + (Math.random() * offset - offset / 2),
         y: corner.y + (Math.random() * offset - offset / 2),

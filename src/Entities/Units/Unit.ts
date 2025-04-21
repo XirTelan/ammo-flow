@@ -1,6 +1,6 @@
-import { Game } from "../../scenes/Game";
+import { Game } from "@/scenes/Game";
 
-type UnitCategory = "small" | "medium" | "large";
+type UnitCategory = "small" | "medium" | "large" | "air";
 
 export class Unit extends Phaser.Physics.Arcade.Image {
   categoty: UnitCategory;
@@ -8,16 +8,22 @@ export class Unit extends Phaser.Physics.Arcade.Image {
   fireRange: number;
 
   constructor(scene: Game, x: number, y: number, texture: string) {
-    super(scene, x, y, texture);
+    super(scene, x, y, `u_${texture}`);
     this.setScale(0.5);
     scene.add.existing(this);
     scene.physics.add.existing(this);
+    const physBody = this.body as Phaser.Physics.Arcade.Body;
+    physBody.setCollideWorldBounds(true);
+    physBody.onWorldBounds = true;
+    physBody.setAllowGravity(false);
+    physBody.setImmovable(true);
+  }
+
+  initState(scene: Game, x: number, y: number) {
+    this.enableBody(true, x, y);
+    this.setActive(true);
+    this.setVisible(true);
     scene.physics.moveTo(this, 1024, 1024, 100);
-    this.body.setCollideWorldBounds(true);
-    this.body.onWorldBounds = true;
-    this.body.setAllowGravity(false);
-    this.body.setImmovable(true);
-    this.postFX.addBloom(0xff0000, 1, 1, 1, 2);
   }
 
   getHit(damage: number) {
@@ -28,7 +34,9 @@ export class Unit extends Phaser.Physics.Arcade.Image {
   }
 
   reset() {
-    this.setActive(true);
-    this.setVisible(true);
+    this.emit("destroy");
+    this.body?.stop();
+    this.setActive(false);
+    this.setVisible(false);
   }
 }

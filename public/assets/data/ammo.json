@@ -7,6 +7,13 @@
         "damageType": "explosive",
         "splashRadius": 10,
         "rangeMod": 0
+      },
+      "aa": {
+        "speed": 100,
+        "damage": 100,
+        "damageType": "explosive",
+        "splashRadius": 10,
+        "rangeMod": 0
       }
     },
     "machineGun": {
@@ -23,7 +30,7 @@
         "statusEffect": "burn",
         "rangeMod": 0
       },
-      "armorPiercing": {
+      "ap": {
         "speed": 720,
         "damage": 25,
         "damageType": "kinetic",
@@ -31,7 +38,7 @@
         "rangeMod": 0
       }
     },
-    "sniper": {
+    "railgun": {
       "default": {
         "speed": 1200,
         "damage": 80,
@@ -52,26 +59,11 @@
         "statusEffect": "disable",
         "rangeMod": 0
       },
-      "armorPiercing": {
+      "ap": {
         "speed": 720,
         "damage": 25,
         "damageType": "kinetic",
         "armorPenetration": 0.4,
-        "rangeMod": 0
-      }
-    },
-    "plasmaCannon": {
-      "default": {
-        "speed": 500,
-        "damage": 50,
-        "damageType": "energy",
-        "rangeMod": 0
-      },
-      "overcharged": {
-        "speed": 450,
-        "damage": 90,
-        "damageType": "energy",
-        "statusEffect": "melt",
         "rangeMod": 0
       }
     },
@@ -82,21 +74,14 @@
         "damageType": "kinetic",
         "splashRadius": 1.5,
         "rangeMod": 0
-      },
-      "antiAir": {
-        "speed": 420,
-        "damage": 30,
-        "damageType": "kinetic",
-        "tracking": true,
-        "rangeMod": 0
       }
     },
-    "railgun": {
+    "plasmaCannon": {
       "default": {
         "speed": 1500,
         "damage": 120,
         "damageType": "kinetic",
-        "armorPenetration": 0.9,
+        "armorPenetration": 1000,
         "rangeMod": 0
       },
       "shock": {
