@@ -4,54 +4,62 @@
       "default": {
         "speed": 100,
         "damage": 600,
-        "splashRadius": 50,
-        "rangeMod": 0
+        "splashRadius": 150,
+        "rangeMod": 0,
+        "type": "ground"
       }
     },
     "machineGun": {
       "default": {
         "speed": 1000,
         "damage": 20,
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "ground"
       },
       "ap": {
         "speed": 720,
         "damage": 25,
         "ap": 0.5,
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "ground"
       },
       "aa": {
         "speed": 1500,
         "damage": 25,
         "ap": 0,
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "air"
       }
     },
     "railgun": {
       "default": {
         "speed": 1500,
         "damage": 300,
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "ground"
       },
       "explosive": {
         "speed": 1000,
         "damage": 200,
         "splashRadius": 10,
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "ground"
       },
       "ap": {
         "speed": 2000,
         "damage": 150,
         "ap": 1,
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "ground"
       }
     },
     "flakCannon": {
       "default": {
         "speed": 400,
         "damage": 35,
-        "splashRadius": 1.5,
-        "rangeMod": 0
+        "splashRadius": 50,
+        "rangeMod": 0,
+        "type": "air"
       }
     },
     "plasmaCannon": {
@@ -59,13 +67,15 @@
         "speed": 1500,
         "damage": 120,
         "ap": 1000,
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "ground"
       },
       "shock": {
         "speed": 1400,
         "damage": 90,
         "statusEffect": "stun",
-        "rangeMod": 0
+        "rangeMod": 0,
+        "type": "ground"
       }
     }
   }
