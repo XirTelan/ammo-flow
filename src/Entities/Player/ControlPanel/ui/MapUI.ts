@@ -19,10 +19,12 @@ export class MapUI {
     this.gameScene = gameScene;
 
     this.zoomValueText = scene.add.text(1230, 45, "ZOOM: 100%", {
-      color: "#ECE3C6",
+      color: colors.textPrimary.hex,
       fontSize: "32px",
       fontStyle: "bold",
       align: "center",
+      stroke: "#444",
+      strokeThickness: 4,
     });
 
     scene.add.rectangle(1450, 90, 5, 100, colors.textPrimary.number);
