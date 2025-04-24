@@ -1,80 +1,11 @@
-import { NextWave, UnitCount, UnitType } from "@/helpers/types";
+import { NextWave, UnitCount, UnitsData, UnitType } from "@/helpers/types";
 import { Game } from "@/scenes/Game";
 import { Unit } from "@/entities/Units/Unit";
+import { map, playerBase, spawnTemplates, unitCosts, waveTemplates } from "./model";
 
-const waveTemplates = [
-  {
-    name: "Early",
-    types: ["light"],
-    weights: [1],
-    multiplier: 1.0,
-  },
-  {
-    name: "Blitz",
-    types: ["light", "air"],
-    weights: [3, 2],
-    multiplier: 1.0,
-  },
-  {
-    name: "Siege",
-    types: ["artillery", "heavy"],
-    weights: [3, 1],
-    multiplier: 1.1,
-  },
-  {
-    name: "Balanced",
-    types: ["light", "medium", "artillery"],
-    weights: [2, 2, 1],
-    multiplier: 1.0,
-  },
-  {
-    name: "Armored",
-    types: ["medium", "heavy"],
-    weights: [3, 2],
-    multiplier: 1.2,
-  },
-  {
-    name: "EarlyMid",
-    types: ["light", "medium"],
-    weights: [3, 1],
-    multiplier: 1.0,
-  },
-  {
-    name: "AirRaid",
-    types: ["air"],
-    weights: [1],
-    multiplier: 0.9,
-  },
-] satisfies {
-  name: string;
-  types: UnitType[];
-  weights: number[];
-  multiplier: number;
-}[];
-
-const spawnTemplates = ["line", "flank", "surround", "corner"];
-
-const map = {
-  width: 2048,
-  height: 2048,
-};
-
-const playerBase = {
-  x: map.width / 2,
-  y: map.height / 2,
-};
-
-const unitCosts = {
-  light: 1,
-  medium: 3,
-  heavy: 5,
-  air: 2,
-  artillery: 4,
-};
 export class Commander {
   scene: Game;
   events = new Phaser.Events.EventEmitter();
-
   nextWave: NextWave;
 
   constructor(scene: Game) {
@@ -94,10 +25,11 @@ export class Commander {
 
   generateWave(waveNumber: number) {
     const basePoints = 10;
-    const points = basePoints + waveNumber * 5;
+    const points = basePoints + waveNumber * 3;
 
+    const validTemplates = waveTemplates.filter((t) => waveNumber >= t.minWave);
     const template =
-      waveTemplates[Math.floor(Math.random() * waveTemplates.length)];
+      validTemplates[Math.floor(Math.random() * validTemplates.length)];
     let wavePoints = Math.floor(points * template.multiplier);
 
     const wave: UnitCount = {
@@ -107,6 +39,7 @@ export class Commander {
       heavy: 0,
       medium: 0,
     };
+
     const { types, weights } = template;
 
     while (true) {
@@ -163,7 +96,7 @@ export class Commander {
     ];
 
     return Array.from({ length: count }, () => {
-      const corner = corners[Math.floor(Math.random() % corners.length)];
+      const corner = corners[Math.floor(Math.random() * corners.length)];
       const offset = 200;
       return {
         x: corner.x + (Math.random() * offset - offset / 2),
@@ -171,6 +104,7 @@ export class Commander {
       };
     });
   }
+
   spawnSurround(count: number, radius = 1500) {
     return Array.from({ length: count }, (_, i) => {
       const angle = (2 * Math.PI * i) / count;
@@ -180,6 +114,7 @@ export class Commander {
       };
     });
   }
+
   spawnFlank(count: number) {
     const orientations = [
       ["left", "right"],
@@ -213,6 +148,7 @@ export class Commander {
 
   spawn() {
     const { units, positions } = this.nextWave;
+    const unitsData: UnitsData = this.scene.cache.json.get("units");
 
     let i = 0;
     for (const [type, count] of Object.entries(units)) {
@@ -220,7 +156,9 @@ export class Commander {
         const { x, y } = positions[i++];
         let unit = this.scene.units.get(x, y, type) as Unit | null;
         if (!unit) return;
-        unit.initState(this.scene, x, y);
+        unit.initState(this.scene.controlPanel.playerBase, x, y, {
+          ...unitsData[type as UnitType],
+        });
       }
     }
   }
