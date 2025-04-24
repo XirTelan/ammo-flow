@@ -102,7 +102,7 @@ export class GameUi extends Scene {
         colors.textPrimary.number
       )
       .setOrigin(0);
-    this.add
+    const hpValue = this.add
       .text(
         hpBarBg.x + hpBarBg.width / 2,
         hpBarBg.y + hpBarBg.height / 2,
@@ -113,6 +113,10 @@ export class GameUi extends Scene {
         }
       )
       .setOrigin(0.5);
+
+    this.gameScene.controlPanel.events.on("health", (value: number) => {
+      hpValue.setText(value.toString());
+    });
 
     new EnemiesIntel(this, this.gameScene.commander);
 

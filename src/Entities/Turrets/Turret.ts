@@ -1,14 +1,14 @@
 import { Projectile } from "../../Projectile";
 import { Game } from "../../scenes/Game";
-import { AmmoVariant, TurretConfig, TurretType } from "../../helpers/types";
+import {
+  AmmoVariant,
+  TurretConfig,
+  TurretStatus,
+  TurretType,
+} from "../../helpers/types";
 import { colors } from "@/helpers/config";
 import { Warehouse } from "../Player/Warehouse";
-
-enum TurretStatus {
-  "firing",
-  "idle",
-  "empty",
-}
+import { Unit } from "../Units/Unit";
 
 enum EventTypes {
   "ammoChange",
@@ -27,8 +27,9 @@ export class Turret extends Phaser.GameObjects.Image {
   fireCooldown: number = 0;
 
   currentAmmoData: AmmoVariant;
+  isAutoLoading: boolean = false;
 
-  private _ammoCount: number = 1000;
+  private _ammoCount: number = 0;
   ammoType: string;
 
   private _status: TurretStatus = TurretStatus.idle;
@@ -70,6 +71,7 @@ export class Turret extends Phaser.GameObjects.Image {
   }
   set ammoCount(value: number) {
     this._ammoCount = value;
+    console.log("hey");
     this.emit("ammoChange", this._ammoCount);
   }
 
@@ -81,9 +83,12 @@ export class Turret extends Phaser.GameObjects.Image {
   }
 
   fire() {
+    if (!this.isArcadeBody(this.target?.body)) {
+      return;
+    }
     let angle = Phaser.Math.Angle.BetweenPoints(
       this,
-      this.target?.body?.center
+      this.target.body.center
     );
     if (angle === null) return;
 
@@ -104,15 +109,22 @@ export class Turret extends Phaser.GameObjects.Image {
 
   setAmmoType(ammoType: string) {
     const ammoData = this.warehouse.getAmmoStats(this.turretType, ammoType);
+    console.log(ammoData, ammoType);
     if (!ammoData) return;
-
+    this.unloadAmmo();
     this.currentAmmoData = ammoData;
+    this.target = undefined;
+    this.ammoType = ammoType;
+    this.emit("ammoTypeChange", this.ammoType);
   }
   preUpdate(_: number, delta: number) {
     this.fireCooldown -= delta / 1000;
     this.emit("cd", this.fireCooldown / this.turretConfig.fireRate);
 
     if (this.ammoCount == 0) {
+      if (this.isAutoLoading) {
+        this.loadAmmo();
+      }
       this.status = TurretStatus.empty;
       return;
     }
@@ -124,8 +136,11 @@ export class Turret extends Phaser.GameObjects.Image {
       this.status = TurretStatus.idle;
       return;
     }
+    if (!this.isArcadeBody(this.target.body)) {
+      return;
+    }
     const distance = Phaser.Math.Distance.BetweenPoints(
-      this.target.body?.center,
+      this.target.body.center,
       this.pos
     );
 
@@ -175,15 +190,51 @@ export class Turret extends Phaser.GameObjects.Image {
   private findTarget() {
     const closestEnemy = this.scene.physics.closest(
       this,
-      this.scene.units
-        .getChildren()
-        .filter(
-          (obj) =>
-            obj.active &&
-            Phaser.Math.Distance.BetweenPoints(obj.body?.center, this.pos) <
-              this.fireRange
-        )
+      this.scene.units.getChildren().filter((obj) => {
+        const unit = obj as Unit;
+        const isSameType = unit.unitConfig.type === this.currentAmmoData.type;
+
+        if (!this.isArcadeBody(obj.body)) {
+          return false;
+        }
+        return (
+          obj.active &&
+          isSameType &&
+          Phaser.Math.Distance.BetweenPoints(obj.body?.center, this.pos) <
+            this.fireRange
+        );
+      })
     );
     if (closestEnemy) this.target = closestEnemy;
+  }
+
+  loadAmmo() {
+    if (
+      this._ammoCount + this.turretConfig.ammoSizeLoad >
+      this.turretConfig.ammoMaxLoad
+    )
+      return;
+
+    const isAccpted = this.warehouse.consumeAmmo(
+      this.turretType,
+      this.ammoType,
+      this.turretConfig.ammoSizeLoad
+    );
+    if (isAccpted)
+      this.ammoCount = this._ammoCount + this.turretConfig.ammoSizeLoad;
+  }
+
+  unloadAmmo() {
+    const toTake = this._ammoCount;
+    this.warehouse.addAmmo(this.turretType, this.ammoType, toTake);
+    this.ammoCount = 0;
+  }
+
+  switchAutoLoading() {
+    this.isAutoLoading = !this.isAutoLoading;
+  }
+
+  protected isArcadeBody(body: any): body is Phaser.Physics.Arcade.Body {
+    return body instanceof Phaser.Physics.Arcade.Body;
   }
 }

@@ -10,15 +10,17 @@ export type UnitType = "light" | "medium" | "heavy" | "air" | "artillery";
 export type UnitCount = {
   [key in UnitType]: number;
 };
-export type UnitConfig = {
-  [key in UnitType]: Unit;
+export type UnitsData = {
+  [key in UnitType]: UnitConfig;
 };
 
-export type Unit = {
+export type UnitConfig = {
   hp: number;
   speed: number;
   damage: number;
-  range: number;
+  fireRange: number;
+  fireRate: number;
+  type: "air" | "ground";
   armor: number;
 };
 
@@ -36,6 +38,12 @@ export type TurretConfig = {
   ammoMaxLoad: number;
   spread: number;
 };
+
+export enum TurretStatus {
+  "firing",
+  "idle",
+  "empty",
+}
 
 export type FactoriesConfig = {
   [key in TurretType]: FactoryStats;
@@ -58,8 +66,9 @@ export interface AmmoVariant {
   damage: number;
   statusEffect?: string;
   rangeMod: number;
-  armorPenetration?: number;
+  ap?: number;
   splashRadius?: number;
+  type: string;
   tracking?: boolean;
 }
 

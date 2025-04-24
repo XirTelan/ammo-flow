@@ -147,6 +147,14 @@ export class FactoryUi {
     );
 
     this.updateProd();
+    
+    if (
+      !this.factory.task ||
+      !this.factory.ammoType ||
+      this.factory.task === "repair"
+    )
+      return;
+
     this.updateAmmoStock(
       this.warehouse.getAmmoCount(this.factory.task, this.factory.ammoType)
     );
@@ -157,6 +165,7 @@ export class FactoryUi {
   }
 
   updateProgressBar(percent: number) {
-    this.progressBar.width = Phaser.Math.Clamp(1 - percent, 0, 1) * 100 * 2;
+    this.progressBar.width =
+      Math.floor(Phaser.Math.Clamp(1 - percent, 0, 1) * 100) * 2;
   }
 }
