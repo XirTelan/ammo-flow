@@ -1,4 +1,3 @@
-import { Scene } from "phaser";
 import { Turret } from "../../Turrets/Turret";
 import { Artillery } from "../../Turrets/Artillery";
 import { MachineGun } from "../../Turrets/MachineGun";
@@ -6,19 +5,24 @@ import { Game } from "../../../scenes/Game";
 import { AllAmmoData } from "../../../helpers/types";
 import { Warehouse } from "../Warehouse";
 import { Factory } from "../Factories/Factory";
+import { Projectile } from "@/Projectile";
+import { PlasmaCannon } from "@/entities/Turrets/PlasmaCannon";
+import { FlakCannon } from "@/entities/Turrets/FlakCannon";
 
-const BASETIME = 4;
+const BASETIME = 30;
 const FALLOFF = 0.9;
 const MINTIME = 5;
 export class ControlPanel {
-  scene: Scene;
+  scene: Game;
   warehouse: Warehouse;
   turrets: Turret[] = [];
   factories: Factory[] = [];
 
   private _workersTotal = 1;
   workersAvailable = 1;
-  private _health = 100;
+
+  playerBase: Phaser.GameObjects.Rectangle;
+  private _health = 1000;
   events: Phaser.Events.EventEmitter;
 
   private currentTime = 0;
@@ -41,9 +45,27 @@ export class ControlPanel {
     this.factories.push(new Factory(scene, this));
 
     this.turrets.push(new MachineGun(scene, 1035, 850));
+    this.turrets.push(new MachineGun(scene, 1335, 850));
+    this.turrets.push(new MachineGun(scene, 991, 1200));
     this.turrets.push(new Artillery(scene, 830, 1020));
     this.turrets.push(new Artillery(scene, 1220, 1120));
-    this.turrets.push(new MachineGun(scene, 991, 1200));
+    this.turrets.push(new FlakCannon(scene, 1220, 1120));
+    this.turrets.push(new PlasmaCannon(scene, 1220, 1120));
+
+    this.playerBase = this.scene.add.rectangle(1024, 1024, 200, 200, 0xff0000);
+    scene.physics.add.existing(this.playerBase);
+    const playerBase = this.playerBase.body as Phaser.Physics.Arcade.Body;
+    playerBase.setAllowGravity(false);
+    playerBase.setImmovable(true);
+    this.scene.physics.add.overlap(
+      this.playerBase,
+      scene.enemyProjectiles,
+      (playerBase, projectile) => {
+        const proj = projectile as Projectile;
+        this.health -= proj.ammoData.damage;
+        proj.disable();
+      }
+    );
 
     scene.time.addEvent({
       delay: 100,
@@ -66,6 +88,14 @@ export class ControlPanel {
   set health(value: number) {
     this._health = value;
     this.events.emit("health", value);
+    if (this._health <= 0) {
+      this.gameOver();
+    }
+  }
+
+  gameOver() {
+    this.scene.scene.pause();
+    this.scene.input.enabled = false;
   }
 
   reset() {
