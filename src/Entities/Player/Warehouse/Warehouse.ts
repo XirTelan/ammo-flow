@@ -55,4 +55,7 @@ export class Warehouse {
   getAmmoStats(turret: TurretType, variant: string): AmmoVariant | undefined {
     return this.ammoData[turret]?.[variant];
   }
+  getAll() {
+    return this.inventory;
+  }
 }

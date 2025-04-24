@@ -1,12 +1,10 @@
 import { FactoryUi } from "./FactoryUi";
 import { Factory } from "../Factory";
-import { PANEL_POSITION, TASK_SELECTOR_POSITION } from "../constants";
+import { FACTORY_UI_HEIGHT, PANEL_POSITION } from "../constants";
 import { TaskPanel } from "./FactoryTasks/TaskPanel";
 import { GameUi } from "@/scenes/GameUi";
 import { FactoryControl } from "./FactoryControl";
 import { colors } from "@/helpers/config";
-
-const FACTORYUI_OFFSET = 150;
 
 export class FactoriesPanel {
   private scene: GameUi;
@@ -39,7 +37,7 @@ export class FactoriesPanel {
     const factoryUi = new FactoryUi(
       this.scene,
       x,
-      y * FACTORYUI_OFFSET,
+      y * FACTORY_UI_HEIGHT,
       factory
     );
     const factoryControl = new FactoryControl(

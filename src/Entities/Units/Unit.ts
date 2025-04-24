@@ -35,7 +35,7 @@ export class Unit extends Phaser.Physics.Arcade.Image {
 
   reset() {
     this.emit("destroy");
-    this.body?.stop();
+    this.disableBody(true);
     this.setActive(false);
     this.setVisible(false);
   }
