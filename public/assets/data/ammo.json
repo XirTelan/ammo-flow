@@ -4,15 +4,7 @@
       "default": {
         "speed": 100,
         "damage": 600,
-        "damageType": "explosive",
-        "splashRadius": 10,
-        "rangeMod": 0
-      },
-      "aa": {
-        "speed": 100,
-        "damage": 100,
-        "damageType": "explosive",
-        "splashRadius": 10,
+        "splashRadius": 50,
         "rangeMod": 0
       }
     },
@@ -20,50 +12,37 @@
       "default": {
         "speed": 1000,
         "damage": 20,
-        "damageType": "kinetic",
-        "rangeMod": 0
-      },
-      "incendiary": {
-        "speed": 680,
-        "damage": 18,
-        "damageType": "fire",
-        "statusEffect": "burn",
         "rangeMod": 0
       },
       "ap": {
         "speed": 720,
         "damage": 25,
-        "damageType": "kinetic",
-        "armorPenetration": 0.4,
+        "ap": 0.5,
         "rangeMod": 0
       }
     },
     "railgun": {
       "default": {
-        "speed": 1200,
-        "damage": 80,
-        "damageType": "kinetic",
+        "speed": 1500,
+        "damage": 300,
         "rangeMod": 0
       },
       "explosive": {
         "speed": 1000,
-        "damage": 60,
-        "damageType": "explosive",
-        "splashRadius": 2.5,
+        "damage": 200,
+        "splashRadius": 10,
         "rangeMod": 0
       },
       "emp": {
         "speed": 950,
-        "damage": 20,
-        "damageType": "electric",
+        "damage": 50,
         "statusEffect": "disable",
         "rangeMod": 0
       },
       "ap": {
-        "speed": 720,
-        "damage": 25,
-        "damageType": "kinetic",
-        "armorPenetration": 0.4,
+        "speed": 2000,
+        "damage": 150,
+        "ap": 1,
         "rangeMod": 0
       }
     },
@@ -71,7 +50,6 @@
       "default": {
         "speed": 400,
         "damage": 35,
-        "damageType": "kinetic",
         "splashRadius": 1.5,
         "rangeMod": 0
       }
@@ -80,14 +58,12 @@
       "default": {
         "speed": 1500,
         "damage": 120,
-        "damageType": "kinetic",
-        "armorPenetration": 1000,
+        "ap": 1000,
         "rangeMod": 0
       },
       "shock": {
         "speed": 1400,
         "damage": 90,
-        "damageType": "electric",
         "statusEffect": "stun",
         "rangeMod": 0
       }
