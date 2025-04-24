@@ -45,4 +45,10 @@ export class Projectile extends Phaser.Physics.Arcade.Image {
 
     this.rotation = Math.atan2(vy, vx);
   }
+
+  disable() {
+    this.disableBody();
+    this.setActive(false);
+    this.setVisible(false);
+  }
 }

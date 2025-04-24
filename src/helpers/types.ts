@@ -56,7 +56,6 @@ export type AllAmmoData = {
 export interface AmmoVariant {
   speed: number;
   damage: number;
-  damageType: DamageType;
   statusEffect?: string;
   rangeMod: number;
   armorPenetration?: number;

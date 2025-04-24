@@ -58,6 +58,7 @@ export class Game extends Scene {
       const proj = obj2 as Projectile;
 
       unit.getHit(proj.ammoData.damage);
+      proj.disable();
     });
   }
   private setupMap() {
