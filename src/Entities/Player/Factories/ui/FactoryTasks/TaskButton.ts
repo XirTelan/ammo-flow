@@ -8,13 +8,16 @@ export class TaskButton {
   private lines: boolean;
 
   container: Phaser.GameObjects.Container;
+  btn: Phaser.GameObjects.GameObject;
 
   constructor(
     scene: Scene,
     offset: number,
     title: string,
     action: () => void,
-    lines: boolean = true
+    lines: boolean = true,
+    width = 150,
+    borderThikness = 5
   ) {
     this.scene = scene;
     this.offset = offset;
@@ -33,14 +36,14 @@ export class TaskButton {
     const bg = this.scene.add.rectangle(
       100,
       this.offset + 30,
-      140,
+      width - borderThikness * 2,
       30,
       colors.overlay.number
     );
     const border = this.scene.add.rectangle(
       100,
       this.offset + 30,
-      150,
+      width,
       40,
       colors.backgroundAccent.number
     );
@@ -53,17 +56,15 @@ export class TaskButton {
     container.add([border, bg, text]);
     bg.setInteractive();
     bg.on("pointerout", () => {
-      console.log("1");
       bg.fillColor = colors.overlay.number;
       text.setColor("#FFF");
     });
     bg.on("pointerover", () => {
-      console.log("1");
       bg.fillColor = colors.backgroundAccent.number;
       text.setColor("#000");
     });
     bg.on("pointerup", () => action());
-
+    this.btn = bg;
     this.container = container;
   }
 }
