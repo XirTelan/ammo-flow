@@ -1,15 +1,23 @@
+import { UnitConfig } from "@/helpers/types";
+import { Projectile } from "@/Projectile";
 import { Game } from "@/scenes/Game";
 
 type UnitCategory = "small" | "medium" | "large" | "air";
 
 export class Unit extends Phaser.Physics.Arcade.Image {
   categoty: UnitCategory;
-  hp = 100;
-  fireRange: number;
+  scene: Game;
+
+  unitConfig: UnitConfig;
+
+  canFire: boolean = true;
+  target: Phaser.Physics.Arcade.Image;
 
   constructor(scene: Game, x: number, y: number, texture: string) {
     super(scene, x, y, `u_${texture}`);
     this.setScale(0.5);
+    this.scene = scene;
+
     scene.add.existing(this);
     scene.physics.add.existing(this);
     const physBody = this.body as Phaser.Physics.Arcade.Body;
@@ -19,16 +27,77 @@ export class Unit extends Phaser.Physics.Arcade.Image {
     physBody.setImmovable(true);
   }
 
-  initState(scene: Game, x: number, y: number) {
+  initState(
+    target: Phaser.Physics.Arcade.Image,
+    x: number,
+    y: number,
+    unitConfig: UnitConfig
+  ) {
+    this.target = target;
+    this.unitConfig = unitConfig;
     this.enableBody(true, x, y);
     this.setActive(true);
     this.setVisible(true);
-    scene.physics.moveTo(this, 1024, 1024, 100);
+  }
+
+  update(time: number, delta: number) {
+    if (!this.active || !this.target) return;
+
+    const distance = Phaser.Math.Distance.Between(
+      this.x,
+      this.y,
+      this.target.x,
+      this.target.y
+    );
+
+    if (distance > this.unitConfig.fireRange) {
+      this.scene.physics.moveTo(
+        this,
+        this.target.x,
+        this.target.y,
+        this.unitConfig.speed
+      );
+    } else {
+      const physBody = this.body as Phaser.Physics.Arcade.Body;
+      physBody.velocity.set(0);
+      if (this.canFire) {
+        this.fire();
+      }
+    }
+  }
+
+  fire() {
+    this.canFire = false;
+    console.log("Firing at target!");
+
+    let angle = Phaser.Math.Angle.BetweenPoints(
+      this,
+      this.target?.body?.center
+    );
+
+    const proj: Projectile = this.scene.enemyProjectiles.getFirstDead(
+      true,
+      this.x,
+      this.y,
+      "projectile"
+    );
+
+    proj.initProj(this.x, this.y, angle, {
+      speed: 100,
+      damage: this.unitConfig.damage,
+      rangeMod: 0,
+      type: this.unitConfig.type,
+    });
+
+    this.scene.time.delayedCall(this.unitConfig.fireRate * 1000, () => {
+      this.canFire = true;
+    });
   }
 
   getHit(damage: number) {
-    this.hp -= damage;
-    if (this.hp <= 0) {
+    console.log("hit", this.unitConfig.hp, damage);
+    this.unitConfig.hp -= damage;
+    if (this.unitConfig.hp <= 0) {
       this.reset();
     }
   }
