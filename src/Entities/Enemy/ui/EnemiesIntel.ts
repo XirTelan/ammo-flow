@@ -17,15 +17,16 @@ export class EnemiesIntel {
     this.unitsConfig = scene.cache.json.get("units");
 
     this.commander.events.on("nextWave", this.showInfo, this);
-    this.showInfo(this.commander.nextWave);
-    this.scene.add
-      .rectangle(1475, 70, 450, 40, colors.backgroundAccent.number)
-      .setOrigin(0);
-    this.scene.add.text(1485, 75, "NEXT WAVE INTEL:", {
-      color: "#000",
+    this.scene.add.rectangle(1475, 80, 450, 40, 0xf4f4f6).setOrigin(0);
+    this.scene.add.text(1495, 85, "NEXT WAVE INTEL:", {
+      color: "#2c2c2c",
       fontSize: "24px",
       fontStyle: "bold",
     });
+    this.scene.add
+      .rectangle(1480, 120, 430, 200, colors.overlay.number)
+      .setOrigin(0);
+    this.showInfo(this.commander.nextWave);
   }
   showInfo(wave: NextWave) {
     if (this.panels) this.panels.destroy();
@@ -36,7 +37,7 @@ export class EnemiesIntel {
     let i = 0;
     for (const [key, count] of Object.entries(units)) {
       if (count == 0) continue;
-      const container = this.scene.add.container(0, i * 60);
+      const container = this.scene.add.container(0, i * 50);
       container.add([
         this.scene.add
           .rectangle(0, 0, 400, 50, colors.overlay.number)
