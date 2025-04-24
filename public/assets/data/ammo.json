@@ -19,6 +19,12 @@
         "damage": 25,
         "ap": 0.5,
         "rangeMod": 0
+      },
+      "aa": {
+        "speed": 1500,
+        "damage": 25,
+        "ap": 0,
+        "rangeMod": 0
       }
     },
     "railgun": {
@@ -31,12 +37,6 @@
         "speed": 1000,
         "damage": 200,
         "splashRadius": 10,
-        "rangeMod": 0
-      },
-      "emp": {
-        "speed": 950,
-        "damage": 50,
-        "statusEffect": "disable",
         "rangeMod": 0
       },
       "ap": {
