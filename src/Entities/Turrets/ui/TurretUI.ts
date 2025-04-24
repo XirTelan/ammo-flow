@@ -1,8 +1,12 @@
 import { Scene } from "phaser";
 import { Turret } from "../Turret";
 import { colors } from "@/helpers/config";
+import { BaseButton } from "@/shared/ui/BaseButton";
+
+const FILLBAR_Y = 80;
 
 export class TurretUI {
+  scene: Scene;
   ammoCount: Phaser.GameObjects.Text;
   status: Phaser.GameObjects.Text;
   name: Phaser.GameObjects.Text;
@@ -10,18 +14,19 @@ export class TurretUI {
   rangeIsOn: boolean = false;
 
   constructor(scene: Scene, x: number, y: number, turret: Turret) {
+    this.scene = scene;
     const container = scene.add.container(x, y);
-    this.name = scene.add.text(0, 5, ` ${turret.turretType.toUpperCase()}`, {
+    this.name = scene.add.text(25, 10, ` ${turret.turretType.toUpperCase()}`, {
       color: "#2C2C2C",
-      fontSize: "20px",
+      fontSize: "18px",
       fontStyle: "bold",
     });
     this.turret = turret;
 
     const maxLoad = scene.add
       .text(
-        180,
-        40,
+        190,
+        50,
         `${turret.turretConfig.ammoSizeLoad}\n${turret.turretConfig.ammoMaxLoad}`,
         {
           color: colors.textSecondary.hex,
@@ -33,7 +38,7 @@ export class TurretUI {
       .setOrigin(1, 0);
 
     this.ammoCount = scene.add
-      .text(225, 55, `${turret.ammoCount}`, {
+      .text(235, 65, `${turret.ammoCount}`, {
         color: "#ECE3C6",
         fontSize: "24px",
         fontStyle: "bold",
@@ -41,11 +46,11 @@ export class TurretUI {
       })
       .setOrigin(0.5);
 
-    const bg = scene.add.image(70, 95, "icon_reload_mask").setAngle(90);
+    const bg = scene.add.image(80, 105, "icon_reload_mask").setAngle(90);
 
     const ammoType = scene.add.text(
-      20,
-      88,
+      30,
+      98,
       `${turret.ammoType.toLocaleUpperCase()}`,
       {
         color: "#000",
@@ -54,7 +59,7 @@ export class TurretUI {
       }
     );
 
-    this.status = scene.add.text(170, 85, `${turret.status}`, {
+    this.status = scene.add.text(180, 100, `${turret.status}`, {
       color: "#2C2C2C",
       fontSize: "20px",
       fontStyle: "bold",
@@ -73,33 +78,29 @@ export class TurretUI {
       .setOrigin(0)
       .setInteractive()
       .on("pointerup", this.switchFireRangeZone, this);
-
     const fillBar = scene.add
-      .rectangle(190, 70, 5, 1, 0xffffff)
+      .rectangle(200, FILLBAR_Y, 5, 1, 0xffffff)
       .setOrigin(0.5, 1);
     turret.on("cd", (value: number) => {
       const pct = Phaser.Math.Clamp(value, 0, 1);
       fillBar.height = 30 * (1 - pct);
-      fillBar.y = 70 - fillBar.height;
+      fillBar.y = FILLBAR_Y - fillBar.height;
     });
 
     container.add([
       scene.add
-        .rectangle(0, 0, 400, 25, colors.backgroundAccent.number, 1)
+        .rectangle(10, 10, 400, 25, colors.backgroundAccent.number, 1)
         .setOrigin(0),
-      scene.add.rectangle(0, 25, 400, 5, colors.border.number, 1).setOrigin(0),
       scene.add
-        .rectangle(0, 30, 400, 80, colors.overlay.number, 1)
+        .rectangle(10, 30, 400, 100, colors.overlay.number, 1)
         .setOrigin(0),
-      scene.add.rectangle(0, 110, 400, 5, colors.border.number, 1).setOrigin(0),
       scene.add
-        .image(10, 35, `${turret.turretType}_ui`)
+        .image(20, 45, `${turret.turretType}_ui`)
         .setOrigin(0)
         .setScale(0.5),
       scene.add
-        .rectangle(140, 80, 120, 30, colors.backgroundAccent.number, 1)
+        .rectangle(150, 90, 120, 35, colors.backgroundAccent.number, 1)
         .setOrigin(0),
-      scene.add.rectangle(260, 25, 140, 85, 0x000000, 1).setOrigin(0),
 
       bg,
       ammoType,
@@ -109,7 +110,10 @@ export class TurretUI {
       this.status,
       this.ammoCount,
       showRange,
+      scene.add.image(0, 0, "turret_panel").setOrigin(0),
     ]);
+
+    this.createBtns(container);
   }
 
   switchFireRangeZone() {
@@ -127,5 +131,68 @@ export class TurretUI {
   }
   hideFireRange() {
     this.turret.hideFireRange();
+  }
+
+  createBtns(container: Phaser.GameObjects.Container) {
+    const loadBtn = new BaseButton(
+      this.scene,
+      320,
+      35,
+      "load_normal",
+      "load_over",
+      "load_pressed"
+    );
+
+    const unloadBtn = new BaseButton(
+      this.scene,
+      385,
+      35,
+      "unload_normal",
+      "unload_over",
+      "unload_pressed"
+    );
+
+    const autloLoadBtn = new BaseButton(
+      this.scene,
+      395,
+      100,
+      "auto_load",
+      "auto_load_over",
+      "auto_load_pressed"
+    );
+
+    const rangeBtn = new BaseButton(
+      this.scene,
+      400,
+      130,
+      "turret_range",
+      "turret_range_over",
+      "turret_range_pressed"
+    );
+    rangeBtn.baseImage.on(
+      "pointerdown",
+      () => {
+        rangeBtn.toggle();
+        this.switchFireRangeZone();
+      },
+      this
+    );
+
+    const turretChangeAmmo = new BaseButton(
+      this.scene,
+      335,
+      85,
+      "turret_changeAmmo",
+      "turret_changeAmmo_over",
+      "turret_changeAmmo_pressed"
+    );
+
+    container.add([
+      loadBtn.container,
+      unloadBtn.container,
+      autloLoadBtn.container,
+      turretChangeAmmo.container,
+      rangeBtn.container,
+    ]);
   }
 }
