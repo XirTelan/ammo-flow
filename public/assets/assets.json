@@ -134,5 +134,246 @@
         "url": "artillery_ui.png"
       }
     ]
+  },
+  {
+    "path": "assets/textures/ui/turretPanel",
+    "files": [
+      {
+        "type": "image",
+        "key": "turret_panel",
+        "url": "turret_panel.png"
+      },
+      {
+        "type": "image",
+        "key": "load_normal",
+        "url": "load_normal.png"
+      },
+      {
+        "type": "image",
+        "key": "load_over",
+        "url": "load_over.png"
+      },
+      {
+        "type": "image",
+        "key": "load_pressed",
+        "url": "load_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "unload_normal",
+        "url": "unload_normal.png"
+      },
+      {
+        "type": "image",
+        "key": "unload_over",
+        "url": "unload_over.png"
+      },
+      {
+        "type": "image",
+        "key": "unload_pressed",
+        "url": "unload_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "auto_load",
+        "url": "auto_load.png"
+      },
+
+      {
+        "type": "image",
+        "key": "auto_load_over",
+        "url": "auto_load_over.png"
+      },
+      {
+        "type": "image",
+        "key": "auto_load_pressed",
+        "url": "auto_load_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "turret_range",
+        "url": "turret_range.png"
+      },
+      {
+        "type": "image",
+        "key": "turret_range_over",
+        "url": "turret_range_over.png"
+      },
+      {
+        "type": "image",
+        "key": "turret_range_pressed",
+        "url": "turret_range_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "turret_changeAmmo",
+        "url": "turret_changeAmmo.png"
+      },
+      {
+        "type": "image",
+        "key": "turret_changeAmmo_over",
+        "url": "turret_changeAmmo_over.png"
+      },
+      {
+        "type": "image",
+        "key": "turret_changeAmmo_pressed",
+        "url": "turret_changeAmmo_pressed.png"
+      }
+    ]
+  },
+  {
+    "path": "assets/textures/ui/controlPanel",
+    "files": [
+      {
+        "type": "image",
+        "key": "controlPanel",
+        "url": "controlPanel.png"
+      },
+      {
+        "type": "image",
+        "key": "mainScreen",
+        "url": "mainScreen.png"
+      },
+      {
+        "type": "image",
+        "key": "hpBar",
+        "url": "hpBar.png"
+      },
+      {
+        "type": "image",
+        "key": "controlPanel_time",
+        "url": "controlPanel_time.png"
+      },
+      {
+        "type": "image",
+        "key": "controlPanel_timer",
+        "url": "controlPanel_timer.png"
+      },
+      {
+        "type": "image",
+        "key": "infoPanel",
+        "url": "infoPanel.png"
+      },
+      {
+        "type": "image",
+        "key": "pause_normal",
+        "url": "pause_normal.png"
+      },
+      {
+        "type": "image",
+        "key": "pause_over",
+        "url": "pause_over.png"
+      },
+      {
+        "type": "image",
+        "key": "pause_pressed",
+        "url": "pause_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_slow",
+        "url": "speed_slow.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_slow_over",
+        "url": "speed_slow_over.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_slow_pressed",
+        "url": "speed_slow_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_normal",
+        "url": "speed_normal.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_normal_over",
+        "url": "speed_normal_over.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_normal_pressed",
+        "url": "speed_normal_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_fast",
+        "url": "speed_fast.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_fast_over",
+        "url": "speed_fast_over.png"
+      },
+      {
+        "type": "image",
+        "key": "speed_fast_pressed",
+        "url": "speed_fast_pressed.png"
+      }
+    ]
+  },
+  {
+    "path": "assets/textures/ui/factoriesPanel",
+    "files": [
+      {
+        "type": "image",
+        "key": "factoriesPanel",
+        "url": "factoriesPanel.png"
+      },
+      {
+        "type": "image",
+        "key": "factoryUi",
+        "url": "factoryUi.png"
+      },
+      {
+        "type": "image",
+        "key": "addWorker",
+        "url": "addWorker.png"
+      },
+      {
+        "type": "image",
+        "key": "addWorker_over",
+        "url": "addWorker_over.png"
+      },
+      {
+        "type": "image",
+        "key": "addWorker_pressed",
+        "url": "addWorker_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "removeWorker",
+        "url": "removeWorker.png"
+      },
+      {
+        "type": "image",
+        "key": "removeWorker_over",
+        "url": "removeWorker_over.png"
+      },
+      {
+        "type": "image",
+        "key": "removeWorker_pressed",
+        "url": "removeWorker_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "changeTask",
+        "url": "changeTask.png"
+      },
+      {
+        "type": "image",
+        "key": "changeTask_over",
+        "url": "changeTask_over.png"
+      },
+      {
+        "type": "image",
+        "key": "changeTask_pressed",
+        "url": "changeTask_pressed.png"
+      }
+    ]
   }
 ]
