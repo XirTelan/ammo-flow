@@ -27,12 +27,17 @@ export class FactoryControl {
       .setOrigin(0);
 
     const workerCount = scene.add
-      .text(0, -16, `${factory.activeWorkers}0`, {
+      .text(0, -16, `${factory.activeWorkers}`, {
         fontSize: "24px",
         color: "#000",
         fontStyle: "bold",
       })
       .setOrigin(0.5);
+
+    factory.events.on("activeWorkerChange", (value: number) => {
+      workerCount.setText(value.toString());
+    });
+
     this.container.add([workersBg, workerCount]);
 
     this.drawControlPanel();
@@ -67,6 +72,13 @@ export class FactoryControl {
       "changeTask_over",
       "changeTask_pressed"
     );
+
+    addWorkerBtn.baseImage.on("pointerup", () => {
+      this.factory.addWorker(1);
+    });
+    removeWorkerBtn.baseImage.on("pointerup", () => {
+      this.factory.removeWorker(1);
+    });
 
     changeTaskBtn.baseImage.on("pointerup", this.changeTask, this);
     this.container.add([

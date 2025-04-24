@@ -16,7 +16,8 @@ export class ControlPanel {
   turrets: Turret[] = [];
   factories: Factory[] = [];
 
-  private _workers = 1;
+  private _workersTotal = 1;
+  workersAvailable = 1;
   private _health = 100;
   events: Phaser.Events.EventEmitter;
 
@@ -34,10 +35,10 @@ export class ControlPanel {
     this.warehouse = Warehouse.getInstance();
     this.warehouse.initiateState(ammo);
 
-    this.factories.push(new Factory(scene));
-    this.factories.push(new Factory(scene));
-    this.factories.push(new Factory(scene));
-    this.factories.push(new Factory(scene));
+    this.factories.push(new Factory(scene, this));
+    this.factories.push(new Factory(scene, this));
+    this.factories.push(new Factory(scene, this));
+    this.factories.push(new Factory(scene, this));
 
     this.turrets.push(new MachineGun(scene, 1035, 850));
     this.turrets.push(new Artillery(scene, 830, 1020));
@@ -52,10 +53,10 @@ export class ControlPanel {
     });
   }
   get workers() {
-    return this._workers;
+    return this._workersTotal;
   }
   set workers(value: number) {
-    this._workers = value;
+    this._workersTotal = value;
     this.events.emit("workers", value);
   }
 
@@ -68,7 +69,7 @@ export class ControlPanel {
   }
 
   reset() {
-    this._workers = 1;
+    this._workersTotal = 1;
     this.health = 100;
   }
 
@@ -76,17 +77,35 @@ export class ControlPanel {
     return Math.max(MINTIME, BASETIME * Math.pow(FALLOFF, n - 1));
   }
 
-  update(time: number, delta: number) {
+  update() {
     if (this.factories.length > 0)
-      this.factories.forEach((factory) => factory.update(time, delta));
+      this.factories.forEach((factory) => factory.update());
 
     this.currentTime -= 0.1;
     if (this.currentTime <= 0) {
       this.events.emit("waveStart", this.wave);
       this.wave = this.wave + 1;
+      this.addWorker(1);
       this.currentTime = this.getWaveDelay(this.wave);
     }
     this.events.emit("timerUpdate", this.currentTime);
+  }
+
+  private addWorker(count: number) {
+    this._workersTotal += count;
+    this.workersAvailable += count;
+    this.events.emit("totalWorkersChange", this._workersTotal);
+    this.events.emit("activeWorkersChange", this.workersAvailable);
+  }
+
+  takeWorker(amount: number) {
+    this.workersAvailable -= amount;
+    this.events.emit("activeWorkersChange", this.workersAvailable);
+  }
+
+  returnWorker(amount: number) {
+    this.workersAvailable += amount;
+    this.events.emit("activeWorkersChange", this.workersAvailable);
   }
 
   createFactory() {}

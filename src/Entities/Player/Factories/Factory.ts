@@ -1,13 +1,19 @@
-import { Scale, Scene } from "phaser";
+import { Scene } from "phaser";
 import { TurretType } from "../../../helpers/types";
 import { Warehouse } from "../Warehouse";
+import { ControlPanel } from "../ControlPanel/ControlPanel";
+
+enum FactoryEvents {
+  "activeWorkerChange",
+}
 
 export class Factory {
-  warehouse: Warehouse;
-  activeWorkers = 1;
+  private warehouse: Warehouse;
+  private controlPanel: ControlPanel;
+  activeWorkers = 0;
   productionCd = 1;
   productionRate = 1;
-  productionPerCycle = 1;
+  productionPerCycle = 0;
   task?: TurretType | "repair";
   events = new Phaser.Events.EventEmitter();
   ammoType?: string;
@@ -18,8 +24,9 @@ export class Factory {
     };
   };
 
-  constructor(scene: Scene) {
+  constructor(scene: Scene, controlPanel: ControlPanel) {
     this.warehouse = Warehouse.getInstance();
+    this.controlPanel = controlPanel;
     this.productionConfigs = scene.cache.json.get("factories");
     console.log(this.productionConfigs);
   }
@@ -28,6 +35,7 @@ export class Factory {
     if (this.activeWorkers == 0 || !this.task) return;
 
     this.productionCd -= 0.1;
+    this.events.emit("cdTick", this.productionCd / this.productionRate);
     if (this.productionCd > 0) return;
 
     this.produce();
@@ -44,6 +52,24 @@ export class Factory {
       this.ammoType,
       1 * this.productionPerCycle * this.activeWorkers
     );
+  }
+
+  addWorker(count: number = 1) {
+    const addAmount = Math.min(this.controlPanel.workersAvailable, count);
+    if (addAmount === 0) return;
+
+    this.controlPanel.takeWorker(addAmount);
+    this.activeWorkers += addAmount;
+    this.events.emit("activeWorkerChange", this.activeWorkers);
+  }
+  removeWorker(count: number = 1) {
+    const newVal = this.activeWorkers - count;
+    if (newVal < 0) return;
+
+    this.activeWorkers = newVal;
+    this.controlPanel.returnWorker(count);
+
+    this.events.emit("activeWorkerChange", this.activeWorkers);
   }
 
   switchToRepair() {}
