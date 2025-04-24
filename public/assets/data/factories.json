@@ -1,7 +1,7 @@
 {
   "machineGun": {
     "rate": 1,
-    "scale": 10
+    "scale": 5
   },
   "plasmaCannon": {
     "rate": 10,
