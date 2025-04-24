@@ -9,6 +9,8 @@ export class EnemiesIntel {
   scene: Scene;
   panels: Phaser.GameObjects.Container;
 
+  totalCount: Phaser.GameObjects.Text;
+
   unitsConfig: UnitConfig;
 
   constructor(scene: Scene, commander: Commander) {
@@ -17,17 +19,36 @@ export class EnemiesIntel {
     this.unitsConfig = scene.cache.json.get("units");
 
     this.commander.events.on("nextWave", this.showInfo, this);
-    this.scene.add.rectangle(1475, 80, 450, 40, 0xf4f4f6).setOrigin(0);
-    this.scene.add.text(1495, 85, "NEXT WAVE INTEL:", {
-      color: "#2c2c2c",
-      fontSize: "24px",
-      fontStyle: "bold",
-    });
+    this.scene.add.rectangle(1475, 80, 450, 40, 0xdfd6c5).setOrigin(0);
+
+    const nextWaveLabel = this.scene.add.text(
+      1495,
+      85,
+      "NEXT WAVE INTEL | COUNT:",
+      {
+        color: `#444`,
+        fontSize: "24px",
+        fontStyle: "bold",
+      }
+    );
+
+    this.totalCount = this.scene.add.text(
+      nextWaveLabel.x + nextWaveLabel.width + 10,
+      nextWaveLabel.y,
+      "",
+      {
+        color: `#444`,
+        fontSize: "24px",
+        fontStyle: "bold",
+      }
+    );
+
     this.scene.add
       .rectangle(1480, 120, 430, 200, colors.overlay.number)
       .setOrigin(0);
     this.showInfo(this.commander.nextWave);
   }
+
   showInfo(wave: NextWave) {
     if (this.panels) this.panels.destroy();
 
@@ -35,8 +56,10 @@ export class EnemiesIntel {
 
     const { units } = wave;
     let i = 0;
+    let total = 0;
     for (const [key, count] of Object.entries(units)) {
       if (count == 0) continue;
+      total += count;
       const container = this.scene.add.container(0, i * 50);
       container.add([
         this.scene.add
@@ -108,5 +131,7 @@ export class EnemiesIntel {
       this.panels.add(container);
       i++;
     }
+
+    this.totalCount.setText(total.toString());
   }
 }
