@@ -61,6 +61,16 @@
     ]
   },
   {
+    "path": "assets/textures/tutorial",
+    "files": [
+      {
+        "type": "image",
+        "key": "turretHelp",
+        "url": "turret.png"
+      }
+    ]
+  },
+  {
     "path": "assets/textures/units",
     "files": [
       {
@@ -234,11 +244,7 @@
         "key": "mainScreen",
         "url": "mainScreen.png"
       },
-      {
-        "type": "image",
-        "key": "hpBar",
-        "url": "hpBar.png"
-      },
+
       {
         "type": "image",
         "key": "controlPanel_time",
@@ -313,6 +319,21 @@
         "type": "image",
         "key": "speed_fast_pressed",
         "url": "speed_fast_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "mainMenu",
+        "url": "mainMenu.png"
+      },
+      {
+        "type": "image",
+        "key": "mainMenu_over",
+        "url": "mainMenu_over.png"
+      },
+      {
+        "type": "image",
+        "key": "mainMenu_pressed",
+        "url": "mainMenu_pressed.png"
       }
     ]
   },
@@ -373,6 +394,51 @@
         "type": "image",
         "key": "changeTask_pressed",
         "url": "changeTask_pressed.png"
+      }
+    ]
+  },
+  {
+    "path": "assets/textures/ui/warehousePanel",
+    "files": [
+      {
+        "type": "image",
+        "key": "warehousePanel",
+        "url": "warehousePanel.png"
+      },
+      {
+        "type": "image",
+        "key": "warehouseScreen",
+        "url": "warehouseScreen.png"
+      },
+      {
+        "type": "image",
+        "key": "warehouseToggle",
+        "url": "warehouseToggle.png"
+      },
+      {
+        "type": "image",
+        "key": "warehouseToggle_over",
+        "url": "warehouseToggle_over.png"
+      },
+      {
+        "type": "image",
+        "key": "warehouseToggle_pressed",
+        "url": "warehouseToggle_pressed.png"
+      },
+      {
+        "type": "image",
+        "key": "databaseBtn",
+        "url": "databaseBtn.png"
+      },
+      {
+        "type": "image",
+        "key": "databaseBtn_over",
+        "url": "databaseBtn_over.png"
+      },
+      {
+        "type": "image",
+        "key": "databaseBtn_pressed",
+        "url": "databaseBtn_pressed.png"
       }
     ]
   }
