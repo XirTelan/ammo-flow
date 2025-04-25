@@ -9,11 +9,14 @@ import { colors } from "../helpers/config";
 import { WarehouseUI } from "@/entities/Player/Warehouse/ui/WarehouseUi";
 import { BaseButton } from "@/shared/ui/BaseButton";
 import { WorkersPanel } from "@/entities/Player/ControlPanel/ui/WorkersPanel";
+import { DatabaseModal } from "@/shared/ui/Database";
+import { TimeControl } from "@/entities/Player/ControlPanel/ui/TimeControl";
 
 export class GameUi extends Scene {
   gameScene: Game;
 
   timeBtns: BaseButton[] = [];
+  timeControl: TimeControl;
 
   constructor() {
     super("GameUi");
@@ -30,35 +33,54 @@ export class GameUi extends Scene {
   }
 
   private drawUi() {
-    //pannels l r
+    this.createWaveCounter();
+    this.createTimer();
 
-    this.add.rectangle(0, 0, 450, 1080, 0x000000, 1).setOrigin(0);
-    this.add.rectangle(1470, 0, 450, 1080, 0x000000, 1).setOrigin(0);
+    this.timeControl = new TimeControl(this, this.gameScene);
+    this.timeControl.init();
+  }
 
-    this.add.rectangle(445, 0, 10, 1080, 0x8a8372, 1).setOrigin(0);
-    this.add.rectangle(1465, 0, 10, 1080, 0x8a8372, 1).setOrigin(0);
+  private initialLoad() {
+    this.scene.bringToTop();
+    this.drawUi();
 
-    //WAVE COUNTER
+    this.setupTurrets();
+    this.setupMap();
+    this.setupMainScreen();
+    this.setupHealthBar();
+    this.setupEnemiesIntel();
+    this.setupPanels();
+    this.setupInfoPanel();
+    this.setupButtons();
+  }
+  private createWaveCounter() {
+    this.add.rectangle(1660, 0, 100, 70, colors.overlay.number, 1).setOrigin(0);
 
-    this.add.rectangle(1660, 0, 100, 70, 0x6d6a59, 1).setOrigin(0);
-    const waveCounter = this.add.text(1680, 30, "000", {
-      color: "#ECE3C6",
-      fontSize: "24px",
+    const waveCounter = this.add.text(1675, 30, "0.0.0", {
+      color: "#fff",
+      fontSize: "20px",
       fontStyle: "bold",
+      fontFamily: "monospace",
       align: "center",
     });
+
     this.gameScene.controlPanel.events.on("waveStart", (value: number) => {
-      waveCounter.setText(`${String(value).padStart(3, "0")}`);
+      const valueStr = String(value).padStart(3, "0");
+      waveCounter.setText(`${valueStr[0]}.${valueStr[1]}.${valueStr[2]}`);
     });
 
-    this.add.image(1530, 30, "controlPanel_time");
+    this.add.image(1530, 29, "controlPanel_time");
+  }
 
-    this.add.rectangle(1800, 35, 100, 70, 0x6d6a59, 1);
+  private createTimer() {
+    this.add.rectangle(1800, 35, 100, 70, colors.overlay.number, 1);
+
     const timer = this.add
-      .text(1800, 40, "00 : 00", {
-        color: "#ECE3C6",
-        fontSize: "20px",
+      .text(1800, 40, "0.0 : 0.0", {
+        color: "#fff",
+        fontSize: "24px",
         fontStyle: "bold",
+        fontFamily: "monospace",
         align: "center",
       })
       .setOrigin(0.5);
@@ -66,47 +88,53 @@ export class GameUi extends Scene {
     this.add.image(1760, 35, "controlPanel_timer");
 
     this.gameScene.controlPanel.events.on("timerUpdate", (value: number) => {
-      timer.setText(`${formatTime(value)}`);
+      timer.setText(formatTime(value));
     });
-
-    this.initTimeSpeedBtns();
   }
 
-  private initialLoad() {
-    this.scene.bringToTop();
-    this.drawUi();
+  private setupTurrets() {
+    const { turrets } = this.gameScene.controlPanel;
+    turrets.forEach((turret, i) => {
+      new TurretUI(this, 0, 0 + 141 * i, turret);
+    });
+  }
 
-    const { turrets, factories } = this.gameScene.controlPanel;
-    const len = turrets.length;
-    for (let i = 0; i < len; i++) {
-      new TurretUI(this, 0, 0 + 141 * i, turrets[i]);
-    }
-
+  private setupMap() {
     new MapUI(this, this.gameScene);
+  }
 
+  private setupMainScreen() {
     this.add.image(
       this.cameras.main.width / 2,
       this.cameras.main.height / 2 + 5,
       "mainScreen"
     );
+  }
+
+  private setupHealthBar() {
+    const healthMax = this.gameScene.controlPanel.healthMax;
+    const barWidth = 250;
+    const barHeight = 25;
 
     const hpBarBg = this.add
-      .rectangle(480, 40, 254, 29, colors.overlay.number)
+      .rectangle(480, 40, barWidth + 4, barHeight + 4, colors.overlay.number)
       .setOrigin(0);
-    this.add
+
+    const hpFill = this.add
       .rectangle(
         hpBarBg.x + 2,
         hpBarBg.y + 2,
-        250,
-        25,
+        barWidth,
+        barHeight,
         colors.textPrimary.number
       )
       .setOrigin(0);
+
     const hpValue = this.add
       .text(
-        hpBarBg.x + hpBarBg.width / 2,
-        hpBarBg.y + hpBarBg.height / 2,
-        "100/100",
+        hpBarBg.x + (barWidth + 4) / 2,
+        hpBarBg.y + (barHeight + 4) / 2,
+        `${this.gameScene.controlPanel.health}/${healthMax}`,
         {
           color: "#000",
           fontStyle: "bold",
@@ -114,20 +142,58 @@ export class GameUi extends Scene {
       )
       .setOrigin(0.5);
 
-    this.gameScene.controlPanel.events.on("health", (value: number) => {
-      hpValue.setText(value.toString());
+    this.gameScene.controlPanel.events.on("health", (currentHp: number) => {
+      console.log(currentHp);
+      const clampedHp = Phaser.Math.Clamp(currentHp, 0, healthMax);
+      const fillRatio = clampedHp / healthMax;
+      console.log(currentHp);
+      hpValue.setText(`${clampedHp}/${healthMax}`);
+      hpFill.width = barWidth * fillRatio;
     });
+  }
 
+  private setupEnemiesIntel() {
     new EnemiesIntel(this, this.gameScene.commander);
+  }
 
-    new WorkersPanel(this, 1810, 750, this.gameScene.controlPanel);
-    new FactoriesPanel(this, factories);
+  private setupPanels() {
+    const { controlPanel } = this.gameScene;
+    new WorkersPanel(this, 1810, 270, controlPanel);
+    new FactoriesPanel(this, controlPanel.factories);
     new WarehouseUI(this);
+  }
 
+  private setupInfoPanel() {
     this.add.image(1695, 170, "infoPanel").setDepth(10);
   }
 
-  addTurretPanel() {}
+  private setupButtons() {
+    const mainMenu = new BaseButton(
+      this,
+      1892,
+      45,
+      "mainMenu",
+      "mainMenu_over",
+      "mainMenu_pressed"
+    );
+
+    const infoModal = new DatabaseModal(this);
+    const database = new BaseButton(
+      this,
+      140,
+      1045,
+      "databaseBtn",
+      "databaseBtn_over",
+      "databaseBtn_pressed"
+    );
+
+    database.baseImage.on("pointerup", () => {
+      if (!this.gameScene.scene.isPaused()) {
+        this.gameScene.scene.pause();
+      }
+      infoModal.show();
+    });
+  }
 
   initTimeSpeedBtns() {
     const stopBtn = new BaseButton(
