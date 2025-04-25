@@ -22,7 +22,8 @@ export class ControlPanel {
   workersAvailable = 1;
 
   playerBase: Phaser.GameObjects.Rectangle;
-  private _health = 1000;
+  private _healthMax = 1000;
+  private _health = this._healthMax;
   events: Phaser.Events.EventEmitter;
 
   private currentTime = 0;
@@ -85,8 +86,11 @@ export class ControlPanel {
   get health() {
     return this._health;
   }
+  get healthMax() {
+    return this._healthMax;
+  }
   set health(value: number) {
-    this._health = value;
+    this._health = Phaser.Math.Clamp(value, 0, this._healthMax);
     this.events.emit("health", value);
     if (this._health <= 0) {
       this.gameOver();
