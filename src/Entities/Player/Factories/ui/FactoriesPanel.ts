@@ -43,7 +43,7 @@ export class FactoriesPanel {
     const factoryControl = new FactoryControl(
       this.scene,
       420,
-      50 + y * 100,
+      252 + y * 100,
       this,
       factory
     );

@@ -10,10 +10,7 @@ import { colors } from "@/helpers/config";
 import { Warehouse } from "../Player/Warehouse";
 import { Unit } from "../Units/Unit";
 
-enum EventTypes {
-  "ammoChange",
-  "statusChange",
-}
+
 
 export class Turret extends Phaser.GameObjects.Image {
   scene: Game;

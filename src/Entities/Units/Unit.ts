@@ -1,6 +1,7 @@
 import { UnitConfig } from "@/helpers/types";
 import { Projectile } from "@/Projectile";
 import { Game } from "@/scenes/Game";
+import { Physics } from "phaser";
 
 type UnitCategory = "small" | "medium" | "large" | "air";
 
@@ -68,12 +69,9 @@ export class Unit extends Phaser.Physics.Arcade.Image {
 
   fire() {
     this.canFire = false;
-    console.log("Firing at target!");
+    const physBody = this.target.body as Physics.Arcade.Body;
 
-    let angle = Phaser.Math.Angle.BetweenPoints(
-      this,
-      this.target?.body?.center
-    );
+    let angle = Phaser.Math.Angle.BetweenPoints(this, physBody.center);
 
     const proj: Projectile = this.scene.enemyProjectiles.getFirstDead(
       true,
@@ -81,6 +79,7 @@ export class Unit extends Phaser.Physics.Arcade.Image {
       this.y,
       "projectile"
     );
+    angle = angle + Phaser.Math.DegToRad(Phaser.Math.Between(-5, 5));
 
     proj.initProj(this.x, this.y, angle, {
       speed: 100,

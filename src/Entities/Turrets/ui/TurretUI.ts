@@ -35,10 +35,10 @@ export class TurretUI {
   private createBackground(container: Phaser.GameObjects.Container) {
     container.add([
       this.scene.add
-        .rectangle(10, 10, 400, 25, colors.backgroundAccent.number)
+        .rectangle(10, 10, 300, 25, colors.backgroundAccent.number)
         .setOrigin(0),
       this.scene.add
-        .rectangle(10, 30, 400, 100, colors.overlay.number)
+        .rectangle(10, 30, 300, 100, colors.overlay.number)
         .setOrigin(0),
       this.scene.add
         .image(20, 45, `${this.turret.turretType}_ui`)
@@ -161,7 +161,7 @@ export class TurretUI {
     const autoLoadBtn = new BaseButton(
       scene,
       395,
-      100,
+      93,
       "auto_load",
       "auto_load_over",
       "auto_load_pressed"
@@ -186,8 +186,8 @@ export class TurretUI {
 
     const changeAmmoBtn = new BaseButton(
       scene,
-      335,
-      85,
+      330,
+      90,
       "turret_changeAmmo",
       "turret_changeAmmo_over",
       "turret_changeAmmo_pressed"
