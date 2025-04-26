@@ -1,6 +1,8 @@
 import { GRAVITY } from "./helpers/config";
 import { Game as MainGame } from "./scenes/Game";
+import { GameOver } from "./scenes/GameOver";
 import { GameUi } from "./scenes/GameUi";
+import { MainMenu } from "./scenes/MainMenu";
 import { Preloader } from "./scenes/Preloader";
 
 import { Game, Types } from "phaser";
@@ -15,12 +17,12 @@ const config: Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Preloader, GameUi, MainGame],
+  scene: [Preloader, MainMenu, MainGame, GameUi, GameOver],
   physics: {
     default: "arcade",
     arcade: {
       gravity: { y: GRAVITY, x: 0 },
-      debug: true,
+      debug: false,
     },
   },
 };
