@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 import { Game } from "../../../../scenes/Game";
-import { colors } from "../../../../helpers/config";
+import { colors } from "@/helpers/config";
 
 const startPoing = 140;
 
@@ -10,6 +10,7 @@ export class MapUI {
 
   zoomMarker: Phaser.GameObjects.Triangle;
   zoomValueText: Phaser.GameObjects.Text;
+  pausedText: Phaser.GameObjects.Text;
 
   startPointer: Phaser.Types.Math.Vector2Like;
   startScroll: Phaser.Types.Math.Vector2Like;
@@ -43,6 +44,18 @@ export class MapUI {
       )
       .setOrigin(0);
 
+    this.pausedText = scene.add
+      .text(scene.cameras.main.width / 2, 50, "PAUSED", {
+        color: colors.textPrimary.hex,
+        fontSize: "32px",
+        fontStyle: "bold",
+        align: "center",
+        stroke: "#444",
+        strokeThickness: 4,
+      })
+      .setOrigin(0.5)
+      .setVisible(false);
+    this.gameScene.events.on("pause", this.onPauseToggle, this);
     this.mapMovment();
   }
   private mapZoom(value: number) {
@@ -57,6 +70,9 @@ export class MapUI {
   }
   private isOutBound(x: number, y: number) {
     return x < 450 || x > 1450 || y < 50 || y > 1050;
+  }
+  private onPauseToggle(value: boolean) {
+    this.pausedText.setVisible(value);
   }
 
   private mapMovment() {
