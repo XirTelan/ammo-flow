@@ -1,26 +1,78 @@
 export const helpDb = [
   {
     title: "Intro",
-    content: `Welcome to the game.\nTurrets are pre-placed. You cannot build, sell, upgrade, or interact with them in the usual ways.
-      You influence them through the types of ammo you load into them and which types you choose to produce.
-      The enemy info panel shows what types of enemies and how many will arrive in the next wave.
-      On the right, you have 4 factories. At each factory, you choose which type of ammo to produce. If you want, you can produce the same type at all 4.
-      Besides choosing the type of ammo, you also need to assign workers. You gain one worker per wave. Each assigned worker increases the amount of ammo produced per cycle.
-      Ammo is sent to storage after production. The amount of ammo produced per cycle is shown directly under the STOCK section.
-      You can view the entire inventory by opening the storage window at the bottom of the screen.
-  
-      You can also reopen this information during the game by pressing the "database" button.`,
+    content: `Welcome to the Game!
+
+  We have a base and we need to defend it. But there's a catch.
+
+The turrets? They're already chilling in place.
+You can't build 'em, sell 'em, or slap upgrades on 'em.
+
+You control the ammo!
+Pick what gets produced, decide what and when gets loaded or unloaded , and watch the fireworks.
+
+Your Role
+
+ Turrets are pre-placed.
+ You cannot build, sell,move or upgrade them.
+ Instead, you influence them by choosing which types of ammo to produce and load into the turrets.
+ Ammo Production
+
+ On the right, you'll see four factories.
+ At each factory, you can:
+
+    Choose an ammo type to produce (you can choose the same type at multiple factories).
+
+    Assign workers to start production (you need at least one worker for a factory to run)
+        -You gain one worker per wave.
+        -Each assigned worker increases the amount of ammo produced per cycle.
+`,
+  },
+  {
+    title: "Intro 2",
+    content: `After production, ammo is sent to storage.
+The STOCK section shows how much of the currently selected ammo type is available.
+To view your full inventory, open the storage window at the bottom of the screen.
+Enemies
+
+The Enemy Info Panel shows:
+
+    The types of enemies that will appear in the next wave
+
+    How many of each type
+
+The first few waves contain only light enemies.
+Stronger enemies will appear in later waves.
+
+You can revisit this information at any time by pressing the Database button.
+Tips:
+
+    Start with the machine gun's default ammo.
+
+    Don’t forget: you can unload ammo from one turret and load it into another if you don’t have enough ammo.`,
   },
   {
     title: "Turrets",
-    content: `The game features the following turret types:
-      machine gun – a universal turret. Can be used against all enemies, provided the right type of ammo is loaded.
-      aa – for aerial targets.
-      ap – for armored targets. (from 0 to 1. where 1 - 100% armor ignore)
-      artillery – large firing radius, high damage, splash damage. Cannot target air units.
-      flak cannon – only against air. Unlike the machine gun, it has higher damage and deals splash damage to nearby enemies.
-      railgun – high damage, long range, low fire rate, and low ammo production speed.
-      plasma cannon – medium range, fires a straight beam, damaging everything in its path. Long reload time.`,
+    content: `Turret Types
+
+The game features several turret types, each with a unique role and behavior. Their effectiveness depends on the type of ammo they are loaded with.
+    -Machine Gun
+     A versatile, all-purpose turret.
+     Can be used against all enemy types with the appropriate ammo.
+     AA (Anti-Air) - Specialized for targeting aerial enemies only.
+     AP (Armor-Piercing) Designed to penetrate armored enemies.Ammo features an AP rating from 0 to 1, where 1 means 100% armor is ignored.
+    -Artillery
+     Long firing range, high damage, and splash damage.
+     Cannot target air units.
+    -Flak Cannon
+     Effective only against air units.
+     Compared to the machine gun, it has higher damage and deals splash damage to nearby flying enemies.
+    -Railgun
+     Extremely high damage with long range and low fire rate.
+     Ammo production is slow, so manage resources carefully.
+    -Plasma Cannon
+     Medium-range turret that fires a continuous beam, damaging all enemies in its path.
+     Has a long reload time, but excels at clearing lines of enemies.`,
     imageKey: "turretHelp",
   },
   {
