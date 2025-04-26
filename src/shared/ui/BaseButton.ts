@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 
 export class BaseButton {
+  scene: Scene;
   container: Phaser.GameObjects.Container;
   baseImage: Phaser.GameObjects.Image;
   overImage: Phaser.GameObjects.Image;
@@ -14,6 +15,7 @@ export class BaseButton {
     overTexture: string,
     pressedTexture?: string
   ) {
+    this.scene = scene;
     this.container = scene.add.container(x, y);
     this.baseImage = scene.add.image(0, 0, baseTexture);
     this.overImage = scene.add.image(0, 0, overTexture);
@@ -39,10 +41,12 @@ export class BaseButton {
   }
 
   onPoniterUp() {
+    this.scene.sound.play("btnPress");
     if (!this.isActive) this.pressed?.setVisible(false);
   }
 
   onPoniterEnter() {
+    this.scene.sound.play("btnOver");
     this.overImage.setVisible(true);
   }
   onPointerLeave() {
