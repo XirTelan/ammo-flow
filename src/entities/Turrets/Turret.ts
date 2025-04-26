@@ -7,13 +7,15 @@ import {
   TurretType,
 } from "../../helpers/types";
 import { colors } from "@/helpers/config";
-import { Unit } from "../Units/Unit";
 import { Warehouse } from "../Player/Warehouse";
+import { Unit } from "../Units/Unit";
+
+
 
 export class Turret extends Phaser.GameObjects.Image {
   scene: Game;
 
-  private warehouse: Warehouse;
+  private warehouse: Warehouse = Warehouse.getInstance();
   pos;
   target?: Phaser.GameObjects.GameObject;
   turretConfig: TurretConfig;
@@ -30,11 +32,8 @@ export class Turret extends Phaser.GameObjects.Image {
   private _status: TurretStatus = TurretStatus.idle;
   fireRangeCircle: Phaser.GameObjects.Graphics;
 
-  private nameLabel?: Phaser.GameObjects.Text;
-
   constructor(
     scene: Game,
-    warehouse: Warehouse,
     x: number,
     y: number,
     turretType: TurretType,
@@ -42,7 +41,6 @@ export class Turret extends Phaser.GameObjects.Image {
   ) {
     super(scene, x, y, turretType);
     this.scene = scene;
-    this.warehouse = warehouse;
 
     scene.add.existing(this);
 
@@ -79,6 +77,7 @@ export class Turret extends Phaser.GameObjects.Image {
   }
   set ammoCount(value: number) {
     this._ammoCount = value;
+    console.log("hey");
     this.emit("ammoChange", this._ammoCount);
   }
 
@@ -93,7 +92,10 @@ export class Turret extends Phaser.GameObjects.Image {
     if (!this.isArcadeBody(this.target?.body)) {
       return;
     }
-    let angle = Phaser.Math.Angle.BetweenPoints(this, this.target.body.center);
+    let angle = Phaser.Math.Angle.BetweenPoints(
+      this,
+      this.target.body.center
+    );
     if (angle === null) return;
 
     const spread = this.turretConfig.spread;
@@ -111,29 +113,9 @@ export class Turret extends Phaser.GameObjects.Image {
     this.ammoCount = this.ammoCount - 1;
   }
 
-  showNameLabel() {
-    if (this.nameLabel) return; // already shown
-
-    this.nameLabel = this.scene.add
-      .text(this.x, this.y - 40, this.turretType, {
-        fontFamily: "monospace",
-        fontSize: "18px",
-        color: colors.textPrimary.hex,
-        backgroundColor: colors.overlay.hex,
-        padding: { left: 6, right: 6, top: 2, bottom: 2 },
-        align: "center",
-      })
-      .setOrigin(0.5)
-      .setDepth(100);
-  }
-
-  private hideNameLabel() {
-    this.nameLabel?.destroy();
-    this.nameLabel = undefined;
-  }
-
   setAmmoType(ammoType: string) {
     const ammoData = this.warehouse.getAmmoStats(this.turretType, ammoType);
+    console.log(ammoData, ammoType);
     if (!ammoData) return;
     this.unloadAmmo();
     this.currentAmmoData = ammoData;
