@@ -72,6 +72,11 @@ export interface AmmoVariant {
   tracking?: boolean;
 }
 
+export type PauseOption = {
+  title: string;
+  action: () => void;
+};
+
 export type NextWave = {
   units: UnitCount;
   positions: { x: number; y: number }[];

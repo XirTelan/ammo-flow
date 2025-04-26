@@ -1,6 +1,5 @@
 import { Scene } from "phaser";
 import { ControlPanel } from "../ControlPanel";
-import { colors } from "@/helpers/config";
 
 const WIDTH = 100;
 const HEIGHT = 300;

@@ -1,5 +1,5 @@
 import { TaskButton } from "@/entities/Player/Factories/ui/FactoryTasks/TaskButton";
-import { helpDb } from "../model/constants";
+import { helpDb } from "../../model/constants";
 
 interface Topic {
   title: string;
@@ -13,9 +13,12 @@ export class DatabaseModal extends Phaser.GameObjects.Container {
   private contentText: Phaser.GameObjects.Text;
   private topicImage?: Phaser.GameObjects.Image;
 
-  constructor(scene: Phaser.Scene) {
-    super(scene, 0, 0);
+  //[TODO: need common modal class]
+  private onCloseAction?: () => void;
 
+  constructor(scene: Phaser.Scene, onClose?: () => void) {
+    super(scene, 0, 0);
+    this.onCloseAction = onClose;
     this.scene = scene;
     this.topicsData = helpDb;
 
@@ -41,7 +44,7 @@ export class DatabaseModal extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
-  private createUI(width: number): void {
+  private createUI(width: number) {
     const listX = 40;
     const listY = 40;
     const listWidth = 200;
@@ -82,14 +85,15 @@ export class DatabaseModal extends Phaser.GameObjects.Container {
     this.add([topicList, this.contentText]);
 
     this.topicImage = this.scene.add
-      .image(width / 2, 700, "")
+      .image(width / 2, 850, "")
       .setVisible(false)
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setScale(0.8);
     this.add(this.topicImage);
     this.showTopic(0);
   }
 
-  private showTopic(index: number): void {
+  private showTopic(index: number) {
     const topic = this.topicsData[index];
     this.contentText.setText(topic.content);
 
@@ -100,11 +104,12 @@ export class DatabaseModal extends Phaser.GameObjects.Container {
     }
   }
 
-  public show(): void {
+  public show() {
     this.setVisible(true);
   }
 
-  public hide(): void {
+  public hide() {
+    this.onCloseAction?.();
     this.setVisible(false);
   }
 }

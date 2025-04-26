@@ -12,7 +12,7 @@ export class Unit extends Phaser.Physics.Arcade.Image {
   unitConfig: UnitConfig;
 
   canFire: boolean = true;
-  target: Phaser.Physics.Arcade.Image;
+  target: Phaser.GameObjects.Rectangle;
 
   constructor(scene: Game, x: number, y: number, texture: string) {
     super(scene, x, y, `u_${texture}`);
@@ -29,19 +29,21 @@ export class Unit extends Phaser.Physics.Arcade.Image {
   }
 
   initState(
-    target: Phaser.Physics.Arcade.Image,
+    target: Phaser.GameObjects.Rectangle,
     x: number,
     y: number,
+    type: string,
     unitConfig: UnitConfig
   ) {
     this.target = target;
     this.unitConfig = unitConfig;
+    this.setTexture(`u_${type}`);
     this.enableBody(true, x, y);
     this.setActive(true);
     this.setVisible(true);
   }
 
-  update(time: number, delta: number) {
+  update() {
     if (!this.active || !this.target) return;
 
     const distance = Phaser.Math.Distance.Between(
@@ -94,7 +96,6 @@ export class Unit extends Phaser.Physics.Arcade.Image {
   }
 
   getHit(damage: number) {
-    console.log("hit", this.unitConfig.hp, damage);
     this.unitConfig.hp -= damage;
     if (this.unitConfig.hp <= 0) {
       this.reset();
