@@ -4,6 +4,7 @@ import { ControlPanel } from "../entities/Player/ControlPanel/ControlPanel";
 import { Commander } from "../entities/Enemy/Commander";
 import { Unit } from "@/entities/Units/Unit";
 import { colors } from "@/helpers/config";
+import { Effects } from "@/shared/Effects";
 
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
@@ -29,8 +30,14 @@ export class Game extends Scene {
     this.setupMap();
     this.setupPhysics();
     this.setupEntities();
-    this.time.delayedCall(0, () => this.events.emit("gameReady"));
+
     this.splashGraphics = this.add.graphics();
+    if (this.sound.volume != 0)
+      this.sound.play("ambient", {
+        loop: true,
+        volume: 0.1,
+      });
+    this.time.delayedCall(50, () => this.events.emit("gameReady"));
   }
 
   private setupEntities() {
@@ -40,12 +47,15 @@ export class Game extends Scene {
 
   private setupMap() {
     this.add.image(0, 0, "map").setOrigin(0);
+    this.add.image(0, 0, "grid").setOrigin(0).setDepth(1);
     this.add.image(1024, 1024, "base");
 
     const mapCam = this.cameras.main;
     mapCam.setViewport(448, 28, 1024, 1024);
     mapCam.setBounds(0, 0, 2048, 2048);
     mapCam.setScroll(mapCam.width / 2, mapCam.height / 2);
+
+    Effects.createPulseShimmer(this, mapCam.width * 2, mapCam.height * 2, 20);
   }
 
   private setupPhysics() {
@@ -101,6 +111,38 @@ export class Game extends Scene {
   private calculateDamage(baseDamage: number, ap: number, target: Unit) {
     const armorReduction = target.unitConfig.armor * (1 - ap);
     return baseDamage * (100 / (100 + armorReduction));
+  }
+
+  togglePause() {
+    const isPaused = this.scene.isPaused();
+    if (isPaused) {
+      this.scene.resume();
+    } else {
+      this.scene.pause();
+    }
+    this.events.emit("pause", !isPaused);
+  }
+  pauseGame() {
+    const isPaused = this.scene.isPaused();
+    if (!isPaused) {
+      this.scene.pause();
+      this.events.emit("pause", true);
+    }
+  }
+  resumeGame() {
+    const isPaused = this.scene.isPaused();
+    if (isPaused) {
+      this.scene.resume();
+      this.events.emit("pause", false);
+    }
+  }
+
+  setTimeScale(physScale: number, timeScale: number) {
+    if (this.scene.isPaused()) {
+      this.scene.resume();
+    }
+    this.physics.world.timeScale = physScale;
+    this.time.timeScale = timeScale;
   }
 
   private handleSplashDamage(

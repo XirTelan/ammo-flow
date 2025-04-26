@@ -48,43 +48,33 @@ export class TimeControl {
 
     normalBtn.toggle();
 
+    this.gameScene.events.on("pause", (value: boolean) => {
+      stopBtn.setActive(value);
+    });
+
     stopBtn.baseImage.on("pointerup", () => {
-      if (this.gameScene.scene.isPaused()) {
-        this.gameScene.scene.resume();
-      } else {
-        this.gameScene.scene.pause();
-      }
-      stopBtn.toggle();
+      this.gameScene.togglePause();
     });
 
     slowBtn.baseImage.on("pointerup", () => {
-      this.setTimeScale(slowBtn, 2, 0.5);
+      this.changeTime(slowBtn, 2, 0.5);
     });
 
     normalBtn.baseImage.on("pointerup", () => {
-      this.setTimeScale(normalBtn, 1, 1);
+      this.changeTime(normalBtn, 1, 1);
     });
 
     fastBtn.baseImage.on("pointerup", () => {
-      this.setTimeScale(fastBtn, 0.5, 2);
+      this.changeTime(fastBtn, 0.5, 2);
     });
 
     this.buttons.push(stopBtn, slowBtn, normalBtn, fastBtn);
   }
 
-  private setTimeScale(
-    activeBtn: BaseButton,
-    physScale: number,
-    timeScale: number
-  ) {
-    if (this.gameScene.scene.isPaused()) {
-      this.gameScene.scene.resume();
-    }
-    this.gameScene.physics.world.timeScale = physScale;
-    this.gameScene.time.timeScale = timeScale;
-
+  changeTime(btn: BaseButton, physScale: number, timeScale: number) {
+    this.gameScene.setTimeScale(physScale, timeScale);
     this.disableAll();
-    activeBtn.toggle();
+    btn.toggle();
   }
 
   disableAll() {
