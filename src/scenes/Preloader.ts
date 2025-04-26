@@ -1,3 +1,4 @@
+import { colors } from "@/helpers/config";
 import { Scene } from "phaser";
 
 export class Preloader extends Scene {
@@ -6,16 +7,62 @@ export class Preloader extends Scene {
   }
 
   init() {
-    //  A simple progress bar. This is the outline of the bar.
-    this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+    this.cameras.main.setBackgroundColor(colors.overlay.number);
 
-    //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-    const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
+    const barWidth = 800;
+    const barHeight = 40;
+    const barX = this.cameras.main.centerX;
+    const barY = this.cameras.main.centerY + 100;
 
-    //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+    this.add
+      .rectangle(barX, barY, barWidth, barHeight, 0x333333)
+      .setStrokeStyle(4, 0x444444);
+
+    const bar = this.add.rectangle(
+      barX - (barWidth / 2 - 2),
+      barY,
+      4,
+      barHeight - 4,
+      colors.textPrimary.number
+    );
+
+    this.tweens.add({
+      targets: bar,
+      duration: 500,
+      ease: "Power2",
+      yoyo: true,
+      repeat: -1,
+      alpha: 0.6,
+    });
+
     this.load.on("progress", (progress: number) => {
-      //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-      bar.width = 4 + 460 * progress;
+      bar.width = (barWidth - 8) * progress;
+    });
+
+    this.add
+      .text(barX, barY - 150, "LOADING...", {
+        font: "30px Arial",
+        color: "#FFFFFF",
+        fontStyle: "bold",
+        stroke: "#000000",
+        strokeThickness: 4,
+        align: "center",
+      })
+      .setOrigin(0.5);
+
+    const percentText = this.add
+      .text(barX, barY + 50, "0%", {
+        font: "20px Arial",
+        color: "#FFFFFF",
+        fontStyle: "bold",
+        stroke: "#000000",
+        strokeThickness: 2,
+        align: "center",
+      })
+      .setOrigin(0.5);
+
+    this.load.on("progress", (progress: number) => {
+      percentText.setText(`${Math.round(progress * 100)}%`);
     });
   }
 
@@ -24,10 +71,6 @@ export class Preloader extends Scene {
   }
 
   create() {
-    //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-    //  For example, you can define global animations here, so we can use them in other scenes.
-
-    //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-    this.scene.start("Game");
+    this.scene.start("MainMenu");
   }
 }
