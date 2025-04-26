@@ -9,11 +9,11 @@
   },
   "flakCannon": {
     "rate": 1,
-    "scale": 10
+    "scale": 5
   },
   "railgun": {
     "rate": 3,
-    "scale": 10
+    "scale": 5
   },
   "artillery": {
     "rate": 5,

@@ -41,7 +41,7 @@
       "explosive": {
         "speed": 1000,
         "damage": 200,
-        "splashRadius": 10,
+        "splashRadius": 50,
         "rangeMod": 0,
         "type": "ground"
       },
@@ -70,10 +70,9 @@
         "rangeMod": 0,
         "type": "ground"
       },
-      "shock": {
+      "aa": {
         "speed": 1400,
         "damage": 90,
-        "statusEffect": "stun",
         "rangeMod": 0,
         "type": "ground"
       }
