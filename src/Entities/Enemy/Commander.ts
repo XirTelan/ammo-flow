@@ -1,7 +1,13 @@
 import { NextWave, UnitCount, UnitsData, UnitType } from "@/helpers/types";
 import { Game } from "@/scenes/Game";
 import { Unit } from "@/entities/Units/Unit";
-import { map, playerBase, spawnTemplates, unitCosts, waveTemplates } from "./model";
+import {
+  map,
+  playerBase,
+  spawnTemplates,
+  unitCosts,
+  waveTemplates,
+} from "./model";
 
 export class Commander {
   scene: Game;
@@ -156,7 +162,7 @@ export class Commander {
         const { x, y } = positions[i++];
         let unit = this.scene.units.get(x, y, type) as Unit | null;
         if (!unit) return;
-        unit.initState(this.scene.controlPanel.playerBase, x, y, {
+        unit.initState(this.scene.controlPanel.playerBase, x, y, type, {
           ...unitsData[type as UnitType],
         });
       }
