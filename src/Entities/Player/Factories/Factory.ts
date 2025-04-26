@@ -3,10 +3,6 @@ import { TurretType } from "../../../helpers/types";
 import { Warehouse } from "../Warehouse";
 import { ControlPanel } from "../ControlPanel/ControlPanel";
 
-enum FactoryEvents {
-  "activeWorkerChange",
-}
-
 export class Factory {
   private warehouse: Warehouse;
   private controlPanel: ControlPanel;
@@ -25,10 +21,9 @@ export class Factory {
   };
 
   constructor(scene: Scene, controlPanel: ControlPanel) {
-    this.warehouse = Warehouse.getInstance();
+    this.warehouse = controlPanel.warehouse;
     this.controlPanel = controlPanel;
     this.productionConfigs = scene.cache.json.get("factories");
-    console.log(this.productionConfigs);
   }
 
   update() {
@@ -44,6 +39,8 @@ export class Factory {
   produce() {
     if (!this.task) return;
     if (this.task === "repair") {
+      this.controlPanel.health = this.controlPanel.health + this.activeWorkers;
+      return;
     }
     if (!this.ammoType) return;
 
@@ -72,7 +69,14 @@ export class Factory {
     this.events.emit("activeWorkerChange", this.activeWorkers);
   }
 
-  switchToRepair() {}
+  switchToRepair() {
+    this.task = "repair";
+    this.productionRate = 10;
+    this.productionCd = this.productionRate;
+    this.productionPerCycle = 1;
+
+    this.events.emit("taskChanged");
+  }
 
   setAmmoProduction(turret: TurretType, variant: string) {
     if (this.task === turret && this.ammoType == variant) return;

@@ -3,13 +3,14 @@ import { Turret } from "./Turret";
 import { Unit } from "../Units/Unit";
 import { TurretStatus } from "@/helpers/types";
 import { Physics } from "phaser";
+import { Warehouse } from "../Player/Warehouse";
 
 export class PlasmaCannon extends Turret {
   private beam: Phaser.GameObjects.Graphics;
   private beamTween?: Phaser.Tweens.Tween;
 
-  constructor(scene: Game, x: number, y: number) {
-    super(scene, x, y, "plasmaCannon", "default");
+  constructor(scene: Game, warehouse: Warehouse, x: number, y: number) {
+    super(scene, warehouse, x, y, "plasmaCannon", "default");
     this.beam = scene.add.graphics();
   }
 
@@ -17,10 +18,7 @@ export class PlasmaCannon extends Turret {
     if (!this.target) return;
     const physBody = this.target.body as Physics.Arcade.Body;
 
-    const angle = Phaser.Math.Angle.BetweenPoints(
-      this,
-      physBody.center
-    );
+    const angle = Phaser.Math.Angle.BetweenPoints(this, physBody.center);
 
     this.status = TurretStatus.firing;
     this.rotation = angle;

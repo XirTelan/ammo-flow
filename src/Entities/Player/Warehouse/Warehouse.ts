@@ -1,7 +1,6 @@
 import { AllAmmoData, TurretType, AmmoVariant } from "../../../helpers/types";
 
 export class Warehouse {
-  private static instance: Warehouse;
   events = new Phaser.Events.EventEmitter();
 
   private ammoData: AllAmmoData;
@@ -14,22 +13,14 @@ export class Warehouse {
     artillery: {},
   };
 
-  static getInstance(): Warehouse {
-    if (!Warehouse.instance) {
-      Warehouse.instance = new Warehouse();
-    }
-    return Warehouse.instance;
-  }
-
-  initiateState(ammoData: AllAmmoData) {
+  constructor(ammoData: AllAmmoData) {
     this.ammoData = ammoData;
 
     for (const turret in ammoData) {
       for (const variant in ammoData[turret as TurretType]) {
-        this.inventory[turret as TurretType][variant] = 100;
+        this.inventory[turret as TurretType][variant] = 0;
       }
     }
-    console.log("Warehouse Init", this.inventory);
   }
 
   addAmmo(turret: TurretType, variant: string, amount: number): void {

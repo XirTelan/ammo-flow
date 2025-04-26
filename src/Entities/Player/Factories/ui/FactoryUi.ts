@@ -3,9 +3,17 @@ import { Factory } from "../Factory";
 import { colors } from "@/helpers/config";
 import { Warehouse } from "../../Warehouse";
 import { FACTORY_UI_HEIGHT } from "../constants";
+import { Effects } from "@/shared/Effects";
 const WIDTH = 360;
 const BORDER = 5;
 const PADDING = 25;
+
+const TEXT_STYLE = {
+  fontSize: "24px",
+  color: "#444",
+  fontFamily: "Lucida Console, monospace",
+  fontStyle: "bold",
+};
 
 export class FactoryUi {
   scene: Scene;
@@ -21,10 +29,17 @@ export class FactoryUi {
 
   warehouse: Warehouse;
   factory: Factory;
-  constructor(scene: Scene, x: number, y: number, factory: Factory) {
+
+  constructor(
+    scene: Scene,
+    warehouse: Warehouse,
+    x: number,
+    y: number,
+    factory: Factory
+  ) {
     this.factory = factory;
     this.scene = scene;
-    this.warehouse = Warehouse.getInstance();
+    this.warehouse = warehouse;
 
     this.container = scene.add.container(x, y);
 
@@ -33,11 +48,7 @@ export class FactoryUi {
         WIDTH / 2,
         70,
         factory.task ? `${factory.task} - ${factory.ammoType} ` : "[NO TASK]",
-        {
-          fontSize: "24px",
-          color: "#444",
-          fontStyle: "bold",
-        }
+        TEXT_STYLE
       )
       .setOrigin(0.5);
 
@@ -45,22 +56,14 @@ export class FactoryUi {
       PADDING,
       this.textTask.y + PADDING,
       `STOCK: 0`,
-      {
-        fontSize: "24px",
-        color: "#444",
-        fontStyle: "bold",
-      }
+      TEXT_STYLE
     );
 
     this.productionText = scene.add.text(
       PADDING,
       this.ammoStock.y + PADDING,
       `PRODUCTION: 0/min`,
-      {
-        fontSize: "24px",
-        color: "#444",
-        fontStyle: "bold",
-      }
+      TEXT_STYLE
     );
 
     const progressBarBg = scene.add
@@ -115,6 +118,13 @@ export class FactoryUi {
       this.progressBar,
       this.ammoStock,
     ]);
+
+    Effects.addScanlineOverlay(this.scene, {
+      height: 720,
+      width: 350,
+      posX: 1450,
+      posY: 340,
+    });
   }
 
   updateProd() {
@@ -135,7 +145,9 @@ export class FactoryUi {
 
     this.textTask.setText(
       this.factory.task
-        ? `${this.factory.task.toLocaleUpperCase()} - ${this.factory.ammoType?.toLocaleUpperCase()} `
+        ? `${this.factory.task.toLocaleUpperCase()} - ${
+            this.factory.ammoType?.toLocaleUpperCase() ?? ""
+          }`
         : "[NO TASK]"
     );
     this.currentEvent = `${this.factory.task}.${this.factory.ammoType}`;
@@ -147,7 +159,7 @@ export class FactoryUi {
     );
 
     this.updateProd();
-    
+
     if (
       !this.factory.task ||
       !this.factory.ammoType ||

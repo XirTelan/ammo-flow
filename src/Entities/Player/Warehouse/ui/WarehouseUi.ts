@@ -27,9 +27,9 @@ export class WarehouseUI {
     artillery: {},
   };
 
-  constructor(scene: Phaser.Scene) {
+  constructor(scene: Phaser.Scene, warehouse: Warehouse) {
     this.scene = scene;
-    this.warehouse = Warehouse.getInstance();
+    this.warehouse = warehouse;
     this.container = this.scene.add.container(STARTX, startY);
     this.scene.add.image(0, 995, "warehousePanel").setDepth(10).setOrigin(0);
     this.createUI();

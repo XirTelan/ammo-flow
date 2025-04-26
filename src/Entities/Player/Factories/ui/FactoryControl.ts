@@ -27,10 +27,11 @@ export class FactoryControl {
       .setOrigin(0);
 
     const workerCount = scene.add
-      .text(0, -16, `${factory.activeWorkers}`, {
+      .text(0, -10, `${factory.activeWorkers}`, {
         fontSize: "24px",
-        color: "#000",
+        color: "#444",
         fontStyle: "bold",
+        fontFamily: "monospace",
       })
       .setOrigin(0.5);
 
@@ -51,7 +52,7 @@ export class FactoryControl {
     const addWorkerBtn = new BaseButton(
       this.scene,
       31,
-      -18,
+      -10,
       "addWorker",
       "addWorker_over",
       "addWorker_pressed"
@@ -59,7 +60,7 @@ export class FactoryControl {
     const removeWorkerBtn = new BaseButton(
       this.scene,
       -31,
-      -18,
+      -10,
       "removeWorker",
       "removeWorker_over",
       "removeWorker_pressed"

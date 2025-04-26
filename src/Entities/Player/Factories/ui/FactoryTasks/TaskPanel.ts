@@ -86,7 +86,6 @@ export class TaskPanel {
         index * BUTTON_SPACING + TITLE_HEIGHT,
         action,
         () => {
-          console.log("factory", this.factoryPanel);
           this.factoryPanel.selectedFactory?.setAmmoProduction(
             title as TurretType,
             action
@@ -100,7 +99,6 @@ export class TaskPanel {
         this.ammoDetails.show();
       });
       button.btn.on("pointerout", () => {
-        console.log("out");
         this.ammoDetails.hide();
       });
       container.add(button.container);
@@ -122,7 +120,9 @@ export class TaskPanel {
       .setOrigin(0);
     const text = this.scene.add.text(10, 10, title.toUpperCase(), {
       fontSize: "18px",
-      color: "#000",
+      fontFamily: "Lucida Console, monospace",
+      fontStyle: "bold",
+      color: "#444",
     });
 
     return [bg, text];
@@ -150,7 +150,10 @@ export class TaskPanel {
       this.scene,
       0,
       "repair",
-      () => {},
+      () => {
+        this.factoryPanel.selectedFactory?.switchToRepair();
+        this.hide();
+      },
       false,
       100
     ).container;

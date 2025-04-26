@@ -2,18 +2,20 @@ import { TurretStatus } from "@/helpers/types";
 import { Game } from "../../scenes/Game";
 import { Unit } from "../Units/Unit";
 import { Turret } from "./Turret";
+import { Physics } from "phaser";
+import { Warehouse } from "../Player/Warehouse";
 
 export class Artillery extends Turret {
-  constructor(scene: Game, x: number, y: number) {
-    super(scene, x, y, "artillery", "default");
+  constructor(scene: Game, warehouse: Warehouse, x: number, y: number) {
+    super(scene, warehouse, x, y, "artillery", "default");
   }
 
   fire() {
     if (!this.target) return;
-    // debugger;
-    const targetUnit = this.target;
-    const targetPos = targetUnit.body.center;
-    const velocity = targetUnit.body.velocity;
+    const physBody = this.target.body as Physics.Arcade.Body;
+
+    const targetPos = physBody.center;
+    const velocity = physBody.velocity;
     const distance = Phaser.Math.Distance.BetweenPoints(this, targetPos);
     const projectileSpeed = this.currentAmmoData.speed;
 
