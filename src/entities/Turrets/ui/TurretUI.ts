@@ -168,6 +168,7 @@ export class TurretUI {
     );
     autoLoadBtn.baseImage.on("pointerup", () => {
       turret.switchAutoLoading();
+      this.scene.sound.play("switch");
       autoLoadBtn.setActive(turret.isAutoLoading);
     });
 
