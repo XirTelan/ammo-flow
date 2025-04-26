@@ -4,7 +4,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
-      //   "@helpers": path.resolve(__dirname, "./src/helpers"),
     },
   },
   base: "./",
