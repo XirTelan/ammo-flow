@@ -25,6 +25,31 @@
     ]
   },
   {
+    "path": "assets/sounds",
+    "files": [
+      {
+        "type": "audio",
+        "key": "switch",
+        "url": "switch.mp3"
+      },
+      {
+        "type": "audio",
+        "key": "btnOver",
+        "url": "btnOver.mp3"
+      },
+      {
+        "type": "audio",
+        "key": "btnPress",
+        "url": "btnPress.mp3"
+      },
+      {
+        "type": "audio",
+        "key": "btnUiOver",
+        "url": "btnUiOver.mp3"
+      }
+    ]
+  },
+  {
     "path": "assets/textures",
     "files": [
       {
@@ -47,6 +72,11 @@
         "type": "image",
         "key": "map",
         "url": "mapTest.png"
+      },
+      {
+        "type": "image",
+        "key": "grid",
+        "url": "grid.png"
       },
       {
         "type": "image",
@@ -142,6 +172,36 @@
         "type": "image",
         "key": "artillery_ui",
         "url": "artillery_ui.png"
+      },
+      {
+        "type": "image",
+        "key": "plasmaCannon",
+        "url": "plasmaCannon.png"
+      },
+      {
+        "type": "image",
+        "key": "plasmaCannon_ui",
+        "url": "plasmaCannon_ui.png"
+      },
+      {
+        "type": "image",
+        "key": "railgun",
+        "url": "railgun.png"
+      },
+      {
+        "type": "image",
+        "key": "railgun_ui",
+        "url": "railgun_ui.png"
+      },
+      {
+        "type": "image",
+        "key": "flakCannon",
+        "url": "flakCannon.png"
+      },
+      {
+        "type": "image",
+        "key": "flakCannon_ui",
+        "url": "flakCannon_ui.png"
       }
     ]
   },
