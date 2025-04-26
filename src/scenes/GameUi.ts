@@ -9,8 +9,9 @@ import { colors } from "../helpers/config";
 import { WarehouseUI } from "@/entities/Player/Warehouse/ui/WarehouseUi";
 import { BaseButton } from "@/shared/ui/BaseButton";
 import { WorkersPanel } from "@/entities/Player/ControlPanel/ui/WorkersPanel";
-import { DatabaseModal } from "@/shared/ui/Database";
+import { DatabaseModal } from "@/shared/ui/Modals/Database";
 import { TimeControl } from "@/entities/Player/ControlPanel/ui/TimeControl";
+import { PauseMenu } from "@/entities/Player/ControlPanel/ui/PauseMenu";
 
 export class GameUi extends Scene {
   gameScene: Game;
@@ -23,13 +24,23 @@ export class GameUi extends Scene {
   }
   create() {
     this.gameScene = this.scene.get("Game") as Game;
-    this.gameScene.events.on(
-      "gameReady",
-      () => {
-        this.initialLoad();
-      },
-      this
-    );
+
+    const loading = this.add
+      .rectangle(
+        0,
+        0,
+        this.cameras.main.width,
+        this.cameras.main.height,
+        colors.overlay.number
+      )
+      .setOrigin(0)
+      .setDepth(100)
+      .setInteractive();
+
+    this.gameScene.events.once("gameReady", () => {
+      this.initialLoad();
+      loading.destroy();
+    });
   }
 
   private drawUi() {
@@ -143,10 +154,8 @@ export class GameUi extends Scene {
       .setOrigin(0.5);
 
     this.gameScene.controlPanel.events.on("health", (currentHp: number) => {
-      console.log(currentHp);
       const clampedHp = Phaser.Math.Clamp(currentHp, 0, healthMax);
       const fillRatio = clampedHp / healthMax;
-      console.log(currentHp);
       hpValue.setText(`${clampedHp}/${healthMax}`);
       hpFill.width = barWidth * fillRatio;
     });
@@ -158,9 +167,10 @@ export class GameUi extends Scene {
 
   private setupPanels() {
     const { controlPanel } = this.gameScene;
+
     new WorkersPanel(this, 1810, 270, controlPanel);
-    new FactoriesPanel(this, controlPanel.factories);
-    new WarehouseUI(this);
+    new FactoriesPanel(this, controlPanel.factories, controlPanel.warehouse);
+    new WarehouseUI(this, controlPanel.warehouse);
   }
 
   private setupInfoPanel() {
@@ -168,7 +178,7 @@ export class GameUi extends Scene {
   }
 
   private setupButtons() {
-    const mainMenu = new BaseButton(
+    const pauseMenuBtn = new BaseButton(
       this,
       1892,
       45,
@@ -176,8 +186,18 @@ export class GameUi extends Scene {
       "mainMenu_over",
       "mainMenu_pressed"
     );
+    pauseMenuBtn.baseImage.on("pointerup", () => {
+      this.gameScene.pauseGame();
+      pauseMenu.show();
+    });
 
-    const infoModal = new DatabaseModal(this);
+    const pauseMenu = new PauseMenu(this, () => {
+      this.gameScene.resumeGame();
+    });
+
+    const infoModal = new DatabaseModal(this, () => {
+      this.gameScene.resumeGame();
+    });
     const database = new BaseButton(
       this,
       140,
@@ -188,9 +208,7 @@ export class GameUi extends Scene {
     );
 
     database.baseImage.on("pointerup", () => {
-      if (!this.gameScene.scene.isPaused()) {
-        this.gameScene.scene.pause();
-      }
+      this.gameScene.togglePause();
       infoModal.show();
     });
   }
