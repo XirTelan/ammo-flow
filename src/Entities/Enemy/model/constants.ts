@@ -25,7 +25,7 @@ export const waveTemplates = [
   {
     name: "Balanced",
     types: ["light", "medium", "artillery"],
-    weights: [2, 2, 1],
+    weights: [1, 3, 2],
     multiplier: 1.0,
     minWave: 15,
   },
@@ -42,6 +42,13 @@ export const waveTemplates = [
     weights: [3, 2],
     multiplier: 1.2,
     minWave: 10,
+  },
+  {
+    name: "Heavy",
+    types: ["heavy"],
+    weights: [1],
+    multiplier: 1.0,
+    minWave: 20,
   },
   {
     name: "AirRaid",
