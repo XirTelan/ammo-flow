@@ -8,10 +8,36 @@ import { Factory } from "../Factories/Factory";
 import { Projectile } from "@/Projectile";
 import { PlasmaCannon } from "@/entities/Turrets/PlasmaCannon";
 import { FlakCannon } from "@/entities/Turrets/FlakCannon";
+import { Railgun } from "@/entities/Turrets/RailGun";
 
-const BASETIME = 30;
-const FALLOFF = 0.9;
+const TurretClasses = {
+  MachineGun,
+  Artillery,
+  Railgun,
+  FlakCannon,
+  PlasmaCannon,
+} as const;
+
+type TurretData = { type: keyof typeof TurretClasses; x: number; y: number };
+
+const LEVEL_DATA = {
+  turrets: [
+    { type: "MachineGun", x: 845, y: 855 },
+    { type: "MachineGun", x: 1235, y: 900 },
+    { type: "MachineGun", x: 925, y: 1190 },
+    { type: "Artillery", x: 900, y: 1005 },
+    { type: "Railgun", x: 1005, y: 1000 },
+    { type: "FlakCannon", x: 1085, y: 1090 },
+    { type: "PlasmaCannon", x: 1055, y: 920 },
+  ],
+} satisfies {
+  turrets: TurretData[];
+};
+
+const BASETIME = 45;
+const FALLOFF = 0.95;
 const MINTIME = 5;
+
 export class ControlPanel {
   scene: Game;
   warehouse: Warehouse;
@@ -22,6 +48,9 @@ export class ControlPanel {
   workersAvailable = 1;
 
   playerBase: Phaser.GameObjects.Rectangle;
+  lastAlertTime = 0;
+  alertCooldown = 1000;
+
   private _healthMax = 1000;
   private _health = this._healthMax;
   events: Phaser.Events.EventEmitter;
@@ -45,15 +74,23 @@ export class ControlPanel {
     this.factories.push(new Factory(scene, this));
     this.factories.push(new Factory(scene, this));
 
-    this.turrets.push(new MachineGun(scene, 1035, 850));
-    this.turrets.push(new MachineGun(scene, 1335, 850));
-    this.turrets.push(new MachineGun(scene, 991, 1200));
-    this.turrets.push(new Artillery(scene, 830, 1020));
-    this.turrets.push(new Artillery(scene, 1220, 1120));
-    this.turrets.push(new FlakCannon(scene, 1220, 1120));
-    this.turrets.push(new PlasmaCannon(scene, 1220, 1120));
+    LEVEL_DATA.turrets.forEach(({ type, x, y }) => {
+      const TurretClass = TurretClasses[type];
+      if (TurretClass) {
+        this.turrets.push(new TurretClass(scene, this.warehouse, x, y));
+      } else {
+        console.warn(`Unknown turret type: ${type}`);
+      }
+    });
 
-    this.playerBase = this.scene.add.rectangle(1024, 1024, 200, 200, 0xff0000);
+    this.playerBase = this.scene.add.rectangle(
+      1024,
+      1024,
+      200,
+      200,
+      0x000000,
+      0
+    );
     scene.physics.add.existing(this.playerBase);
     const playerBase = this.playerBase.body as Phaser.Physics.Arcade.Body;
     playerBase.setAllowGravity(false);
@@ -61,8 +98,9 @@ export class ControlPanel {
     this.scene.physics.add.overlap(
       this.playerBase,
       scene.enemyProjectiles,
-      (playerBase, projectile) => {
+      (_playerBase, projectile) => {
         const proj = projectile as Projectile;
+        this.playSoftAlert();
         this.health -= proj.ammoData.damage;
         proj.disable();
       }
@@ -75,6 +113,15 @@ export class ControlPanel {
       callbackScope: this,
     });
   }
+
+  playSoftAlert() {
+    const now = this.scene.time.now;
+    if (now - this.lastAlertTime > this.alertCooldown) {
+      this.scene.sound.play("softAlert");
+      this.lastAlertTime = now;
+    }
+  }
+
   get workers() {
     return this._workersTotal;
   }
@@ -100,6 +147,8 @@ export class ControlPanel {
   gameOver() {
     this.scene.scene.pause();
     this.scene.input.enabled = false;
+    this.scene.game.scene.stop("GameUi");
+    this.scene.scene.start("GameOver");
   }
 
   reset() {
