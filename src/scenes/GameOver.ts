@@ -1,35 +1,80 @@
-import { Scene } from 'phaser';
+import { Scene } from "phaser";
+import { TaskButton } from "@/entities/Player/Factories/ui/FactoryTasks/TaskButton";
+import { PauseOption } from "@/helpers/types";
+import { colors } from "@/helpers/config";
+import { Effects } from "@/shared/Effects";
 
-export class GameOver extends Scene
-{
-    camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    gameover_text : Phaser.GameObjects.Text;
+export class GameOver extends Scene {
+  private options: PauseOption[];
 
-    constructor ()
-    {
-        super('GameOver');
-    }
+  constructor() {
+    super("GameOver");
+    this.options = [
+      { title: "Restart", action: () => this.restartGame() },
+      { title: "Exit to Main Menu", action: () => this.exitToMainMenu() },
+    ];
+  }
 
-    create ()
-    {
-        this.camera = this.cameras.main
-        this.camera.setBackgroundColor(0xff0000);
+  create() {
+    const width = this.scale.width;
+    const height = this.scale.height;
 
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
+    const background = this.add
+      .rectangle(0, 0, width, height, colors.overlay.number, 1)
+      .setOrigin(0)
+      .setInteractive();
 
-        this.gameover_text = this.add.text(512, 384, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        });
-        this.gameover_text.setOrigin(0.5);
+    const gameOverText = this.add
+      .text(width / 2, height / 2 - 160, "MISSION FAILED", {
+        fontSize: "48px",
+        fontFamily: "Lucida Console, monospace",
+        fontStyle: "bold",
+        color: "#ffffff",
+      })
+      .setOrigin(0.5);
 
-        this.input.once('pointerdown', () => {
+    const listWidth = 200;
+    const listHeight = this.options.length * 45 + 45;
+    const centerX = (width - listWidth) / 2;
+    const centerY = (height - listHeight) / 2;
 
-            this.scene.start('MainMenu');
+    const gameOverList = this.add.container(centerX, centerY);
+    let offsetY = 0;
 
-        });
-    }
+    this.options.forEach((option) => {
+      const btn = new TaskButton(
+        this,
+        offsetY,
+        option.title,
+        option.action,
+        false,
+        250
+      );
+
+      gameOverList.add(btn.container);
+      offsetY += 45;
+    });
+
+    this.add.existing(gameOverList);
+    this.add.existing(gameOverText);
+    this.add.existing(background);
+
+    Effects.addScanlineOverlay(this, {
+      height,
+      width,
+      posX: 0,
+      posY: 0,
+    });
+    Effects.createVerticalDataStream(this, 8);
+    Effects.createPulseShimmer(this, width, height, 10);
+  }
+
+  private restartGame(): void {
+    this.scene.start("Game");
+  }
+
+  private exitToMainMenu(): void {
+    this.scene.stop("Game");
+    this.scene.start("MainMenu");
+  }
 }
