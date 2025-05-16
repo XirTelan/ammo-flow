@@ -1,4 +1,11 @@
 # AMMO FLOW
+<p align="center">
+  
+<img align="middle" alt="Logo" src="https://github.com/user-attachments/assets/3b644586-2f7b-4589-b188-739e1806a91a" height="200px"  />
+</p>
+  
+
+
 > *Control the ammo. Control the battle.*
 
 ## Demo
@@ -10,8 +17,8 @@ Watch a quick gameplay demo here: [Demo Video](https://youtu.be/6QRh2LelJ9o)
 ## Built With
 
 - **Phaser** — HTML5 Game Framework
-- **JavaScript**
-- **Blender**   
+- **JavaScript(TypeScript)**
+- **Blender**  
 
 ---
 
@@ -26,7 +33,12 @@ No building, no selling, no upgrades.
 You control the ammo!  
 Pick what’s produced, balance your supply, and decide what gets loaded or unloaded to survive the enemy waves.
 
+![Demo](https://github.com/user-attachments/assets/7721328a-556d-4371-b077-3622c7695348)
+
 ---
+
+
+
 
 ## Gameplay Features
 
@@ -58,7 +70,10 @@ Pick what’s produced, balance your supply, and decide what gets loaded or unlo
   - Manage your available ammo.  
   - Load turrets with the right ammo at the right time.
 
-- **Turrets:**  
+- **Turrets:**
+  
+    <img align="middle" alt="Logo" src="https://github.com/user-attachments/assets/81f2052d-40d5-4049-a644-cc6085f29d07" height="200px"  />
+    
   - Machine Gun: Versatile and flexible.
   - Artillery: Long-range, high-damage splash attacks.
   - Flak Cannon: Specialized for air units.
