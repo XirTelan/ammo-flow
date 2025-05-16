@@ -1,9 +1,11 @@
+import { AudioManager } from "@/entities/general/AudioManager";
 import { colors } from "@/helpers/config";
 import { MainMenuUi } from "@/shared/ui/MainMenuUi";
 import { Scene, GameObjects } from "phaser";
 
 export class MainMenu extends Scene {
   background: GameObjects.Image;
+  audioManager: AudioManager;
   logo: GameObjects.Image;
   title: GameObjects.Text;
 
@@ -12,13 +14,12 @@ export class MainMenu extends Scene {
   }
 
   loadSetings() {
-    const volume = Number(localStorage.getItem("volume"));
-    this.game.sound.setVolume((volume ?? 100) / 100);
+    this.audioManager = AudioManager.getInstance();
+    this.audioManager.playBGM(this, "ambient");
   }
 
   create() {
     this.loadSetings();
-
     new MainMenuUi(this);
 
     const width = this.cameras.main.width;

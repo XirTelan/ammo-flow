@@ -9,6 +9,7 @@ import { Projectile } from "@/Projectile";
 import { PlasmaCannon } from "@/entities/Turrets/PlasmaCannon";
 import { FlakCannon } from "@/entities/Turrets/FlakCannon";
 import { Railgun } from "@/entities/Turrets/RailGun";
+import { AudioManager } from "@/entities/general/AudioManager";
 
 const TurretClasses = {
   MachineGun,
@@ -117,7 +118,7 @@ export class ControlPanel {
   playSoftAlert() {
     const now = this.scene.time.now;
     if (now - this.lastAlertTime > this.alertCooldown) {
-      this.scene.sound.play("softAlert");
+      AudioManager.getInstance().playSFX(this.scene, "softAlert");
       this.lastAlertTime = now;
     }
   }

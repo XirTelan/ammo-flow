@@ -4,6 +4,7 @@ import { colors } from "@/helpers/config";
 import { BaseButton } from "@/shared/ui/BaseButton";
 import { TaskButton } from "@/entities/Player/Factories/ui/FactoryTasks/TaskButton";
 import { AllAmmoData } from "@/helpers/types";
+import { AudioManager } from "@/entities/general/AudioManager";
 
 const FILLBAR_Y = 80;
 
@@ -168,7 +169,7 @@ export class TurretUI {
     );
     autoLoadBtn.baseImage.on("pointerup", () => {
       turret.switchAutoLoading();
-      this.scene.sound.play("switch");
+      AudioManager.getInstance().playSFX(this.scene, "switch");
       autoLoadBtn.setActive(turret.isAutoLoading);
     });
 

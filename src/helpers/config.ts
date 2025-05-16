@@ -1,5 +1,7 @@
 export const GRAVITY = 0;
 
+export const localStoragePrefix = "ammoFlow_";
+
 export const colors = {
   background: { hex: "#C7B89A", number: 0xc7b89a },
   backgroundAccent: { hex: "#ded7c5", number: 0xe6e8ec },

@@ -32,11 +32,7 @@ export class Game extends Scene {
     this.setupEntities();
 
     this.splashGraphics = this.add.graphics();
-    if (this.sound.volume != 0)
-      this.sound.play("ambient", {
-        loop: true,
-        volume: 0.1,
-      });
+
     this.time.delayedCall(50, () => this.events.emit("gameReady"));
   }
 

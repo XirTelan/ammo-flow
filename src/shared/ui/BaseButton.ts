@@ -1,3 +1,4 @@
+import { AudioManager } from "@/entities/general/AudioManager";
 import { Scene } from "phaser";
 
 export class BaseButton {
@@ -41,12 +42,12 @@ export class BaseButton {
   }
 
   onPoniterUp() {
-    this.scene.sound.play("btnPress");
+    AudioManager.getInstance().playSFX(this.scene, "btnPress");
     if (!this.isActive) this.pressed?.setVisible(false);
   }
 
   onPoniterEnter() {
-    this.scene.sound.play("btnOver");
+    AudioManager.getInstance().playSFX(this.scene, "btnOver");
     this.overImage.setVisible(true);
   }
   onPointerLeave() {
