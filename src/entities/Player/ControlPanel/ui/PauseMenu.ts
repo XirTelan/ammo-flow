@@ -1,24 +1,18 @@
 import { TaskButton } from "@/entities/Player/Factories/ui/FactoryTasks/TaskButton";
+import { ModalContainer } from "@/shared/ui/Modals/Modal";
 
 interface PauseOption {
   title: string;
   action: () => void;
 }
 
-export class PauseMenu extends Phaser.GameObjects.Container {
-  private background: Phaser.GameObjects.Rectangle;
+export class PauseMenu extends ModalContainer {
   private pauseOptions: PauseOption[];
   private contentText: Phaser.GameObjects.Text;
 
-  //[TODO: need common modal class]
-  private onCloseAction?: () => void;
-
   constructor(scene: Phaser.Scene, onClose?: () => void) {
-    super(scene, 0, 0);
+    super(scene, 0, 0, onClose);
 
-    this.onCloseAction = onClose;
-
-    this.scene = scene;
     this.pauseOptions = [
       { title: "Restart", action: () => this.restartGame() },
       { title: "Exit to Main Menu", action: () => this.exitToMainMenu() },
@@ -27,54 +21,38 @@ export class PauseMenu extends Phaser.GameObjects.Container {
     const width = scene.scale.width;
     const height = scene.scale.height;
 
-    this.setSize(width, height);
-    this.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, width, height),
-      Phaser.Geom.Rectangle.Contains
-    );
-
-    this.background = scene.add
-      .rectangle(0, 0, width, height, 0x000000, 0.8)
-      .setOrigin(0)
-      .setInteractive();
-
-    this.add(this.background);
-
     this.createUI(width, height);
-    this.setDepth(20);
-    this.setVisible(false);
-    scene.add.existing(this);
   }
 
   private createUI(width: number, height: number): void {
     const listWidth = 200;
-    const listHeight = this.pauseOptions.length * 45 + 45;
-    const centerX = (width - listWidth) / 2;
-    const centerY = (height - listHeight) / 2;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
     const pauseList = this.scene.add.container(centerX, centerY);
     let offsetY = 0;
     this.pauseOptions.forEach((option) => {
-      const btn = new TaskButton(
-        this.scene,
-        offsetY,
-        option.title,
-        option.action,
-        false,
-        250
-      );
+      const btn = new TaskButton({
+        scene: this.scene,
+        y: offsetY,
+        title: option.title,
+        action: option.action,
+        width: 250,
+        height: 50,
+      });
 
       pauseList.add(btn.container);
-      offsetY += 45;
+      offsetY += 60;
     });
 
-    const closeBtn = new TaskButton(
-      this.scene,
-      offsetY * 2,
-      "CLOSE",
-      () => this.hide(),
-      false
-    );
+    const closeBtn = new TaskButton({
+      scene: this.scene,
+      y: offsetY * 2,
+      title: "CLOSE",
+      action: () => this.hide(),
+      width: 100,
+      height: 50,
+    });
     pauseList.add(closeBtn.container);
 
     this.contentText = this.scene.add.text(

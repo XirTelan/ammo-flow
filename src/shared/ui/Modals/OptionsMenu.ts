@@ -1,166 +1,94 @@
+import { AudioManager } from "@/entities/general/AudioManager";
+import { VolumeControl } from "@/entities/general/VolumeControl";
+import { ModalContainer } from "./Modal";
 import { TaskButton } from "@/entities/Player/Factories/ui/FactoryTasks/TaskButton";
-import { colors } from "@/helpers/config";
 
-const BAR_WIDTH = 250;
+const OPTIONS_XOFFSET = 200;
+const OPTIONS_YOFFSET = 200;
+export class OptionsMenu extends ModalContainer {
+  private audioManager = AudioManager.getInstance();
+  private controls: VolumeControl[] = [];
 
-export class OptionsMenu extends Phaser.GameObjects.Container {
-  private background: Phaser.GameObjects.Rectangle;
-  private volumeLabel: Phaser.GameObjects.Text;
-  private volumeBarBg: Phaser.GameObjects.Rectangle;
-  private volumeBarFill: Phaser.GameObjects.Rectangle;
-  private volumeValueText: Phaser.GameObjects.Text;
-  private decreaseButton: TaskButton;
-  private increaseButton: TaskButton;
-  private volume: number = 100;
-
-  private onCloseAction?: () => void;
-
-  constructor(scene: Phaser.Scene, onClose?: () => void) {
-    super(scene, 0, 0);
-    this.volume = Number(localStorage.getItem("volume")) ?? 100;
-
-    this.onCloseAction = onClose;
-    this.scene = scene;
-
-    const width = scene.scale.width;
-    const height = scene.scale.height;
-
-    this.setSize(width, height);
-    this.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, width, height),
-      Phaser.Geom.Rectangle.Contains
-    );
-
-    this.background = scene.add
-      .rectangle(0, 0, width, height, 0x000000, 0.8)
-      .setOrigin(0)
-      .setInteractive();
-
-    this.add(this.background);
-
-    this.createUI(width, height);
-    this.setDepth(20);
-    this.setVisible(false);
-    scene.add.existing(this);
+  constructor(scene: Phaser.Scene, x = 0, y = 0, onClose?: () => void) {
+    super(scene, x, y, onClose);
+    this.createUI();
   }
 
-  private createUI(width: number, height: number): void {
-    const container = this.scene.add.container(
-      width / 2 - 150,
-      height / 2 - 200
+  private createUI(): void {
+    const { width, height } = this.scene.scale;
+
+    const content = this.scene.add.container(
+      width / 2 - OPTIONS_XOFFSET,
+      height / 2 - OPTIONS_YOFFSET
     );
-
-    const row = this.scene.add.container(-150, 0);
-
-    this.volumeLabel = this.scene.add
-      .text(0, 0, "Volume:", {
-        fontSize: "24px",
-        fontFamily: "Lucida Console, monospace",
-        color: "#ffffff",
-      })
-      .setOrigin(0, 0.5);
-
-    const barHeight = 20;
-
-    this.volumeBarBg = this.scene.add
-      .rectangle(0, 0, BAR_WIDTH, barHeight, colors.overlay.number)
-      .setOrigin(0, 0.5);
-
-    this.volumeBarFill = this.scene.add
-      .rectangle(
-        0,
-        0,
-        (this.volume / 100) * BAR_WIDTH,
-        barHeight,
-        colors.background.number
-      )
-      .setOrigin(0, 0.5);
-
-    this.volumeValueText = this.scene.add
-      .text(0, 0, `${this.volume}%`, {
-        fontSize: "20px",
-        fontFamily: "Lucida Console, monospace",
-        color: "#ffffff",
-      })
-      .setOrigin(0, 0.5);
-
-    this.decreaseButton = new TaskButton(
+    content.add(
+      this.scene.add
+        .text(OPTIONS_XOFFSET, 20, "Options", {
+          fontSize: "28px",
+          fontFamily: "Lucida Console, monospace",
+          color: "#ffffff",
+        })
+        .setOrigin(0.5)
+    );
+    const master = new VolumeControl(
       this.scene,
-      -30,
-      "-",
-      () => this.adjustVolume(-5),
-      false,
-      40
+      40,
+      60,
+      "Master",
+      "master",
+      this.audioManager
     );
-
-    this.increaseButton = new TaskButton(
+    const bgm = new VolumeControl(
       this.scene,
-      -30,
-      "+",
-      () => this.adjustVolume(5),
-      false,
-      40
+      40,
+      130,
+      "BGM",
+      "bgm",
+      this.audioManager
     );
-
-    const buttonsRow = this.scene.add.container(0, 0, [
-      this.decreaseButton.container,
-      this.increaseButton.container,
-    ]);
-    this.decreaseButton.container.x = 0;
-    this.increaseButton.container.x = 50;
-
-    let currentX = 0;
-
-    this.volumeLabel.x = currentX;
-    currentX += this.volumeLabel.width + 20;
-
-    this.volumeBarBg.x = currentX;
-    this.volumeBarFill.x = currentX;
-
-    currentX += BAR_WIDTH + 10;
-
-    this.volumeValueText.x = currentX;
-    currentX += this.volumeValueText.width + 20;
-
-    buttonsRow.x = currentX;
-
-    row.add([
-      this.volumeLabel,
-      this.volumeBarBg,
-      this.volumeBarFill,
-      this.volumeValueText,
-      buttonsRow,
-    ]);
-
-    const backButton = new TaskButton(
+    const sfx = new VolumeControl(
       this.scene,
-      80,
-      "BACK",
-      () => this.hide(),
-      false,
-      250
+      40,
+      200,
+      "SFX",
+      "sfx",
+      this.audioManager
     );
-    backButton.container.x = 0;
 
-    container.add([row, backButton.container]);
-    this.add(container);
+    this.controls.push(master, bgm, sfx);
+
+    const resetBtn = new TaskButton({
+      x: 200,
+      y: 300,
+      width: 250,
+      height: 50,
+      scene: this.scene,
+      title: "Reset to Defaults",
+      action: () => this.controls.forEach((c) => c.reset()),
+      borderThickness: 2,
+    });
+
+    const closeBtn = new TaskButton({
+      x: 200,
+      y: 380,
+      width: 250,
+      height: 50,
+      scene: this.scene,
+      title: "Close",
+      action: this.hide.bind(this),
+      borderThickness: 2,
+    });
+
+    content.add([master, bgm, sfx, resetBtn.container, closeBtn.container]);
+    this.add(content);
   }
 
-  private adjustVolume(amount: number): void {
-    this.volume = Phaser.Math.Clamp(this.volume + amount, 0, 100);
-    this.volumeBarFill.width = (this.volume / 100) * BAR_WIDTH;
-    this.volumeValueText.setText(`${this.volume}%`);
-
-    localStorage.setItem("volume", this.volume.toString());
-    this.scene.game.sound.setVolume(this.volume / 100);
-  }
-
-  public show(): void {
+  show() {
     this.setVisible(true);
   }
-
-  public hide(): void {
+  hide() {
     this.onCloseAction?.();
+
     this.setVisible(false);
   }
 }

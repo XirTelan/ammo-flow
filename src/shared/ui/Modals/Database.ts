@@ -1,5 +1,6 @@
 import { TaskButton } from "@/entities/Player/Factories/ui/FactoryTasks/TaskButton";
 import { helpDb } from "../../model/constants";
+import { ModalContainer } from "./Modal";
 
 interface Topic {
   title: string;
@@ -7,69 +8,49 @@ interface Topic {
   imageKey?: string;
 }
 
-export class DatabaseModal extends Phaser.GameObjects.Container {
-  private background: Phaser.GameObjects.Rectangle;
+export class DatabaseModal extends ModalContainer {
   private topicsData: Topic[];
   private contentText: Phaser.GameObjects.Text;
   private topicImage?: Phaser.GameObjects.Image;
 
-  //[TODO: need common modal class]
-  private onCloseAction?: () => void;
-
   constructor(scene: Phaser.Scene, onClose?: () => void) {
-    super(scene, 0, 0);
-    this.onCloseAction = onClose;
+    super(scene, 0, 0, onClose);
     this.scene = scene;
     this.topicsData = helpDb;
 
     const width = scene.scale.width;
     const height = scene.scale.height;
 
-    this.setSize(width, height);
-    this.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, width, height),
-      Phaser.Geom.Rectangle.Contains
-    );
-
-    this.background = scene.add
-      .rectangle(0, 0, width, height, 0x000000, 0.8)
-      .setOrigin(0)
-      .setInteractive();
-
-    this.add(this.background);
-
     this.createUI(width);
-    this.setDepth(20);
-    this.setVisible(false);
-    scene.add.existing(this);
   }
 
   private createUI(width: number) {
-    const listX = 40;
+    const listX = 130;
     const listY = 40;
     const listWidth = 200;
 
-    const topicList = this.scene.add.container(0, 0);
+    const topicList = this.scene.add.container(200, 100);
     let offsetY = 0;
     this.topicsData.forEach((topic, index) => {
-      const btn = new TaskButton(
-        this.scene,
-        offsetY,
-        topic.title,
-        () => this.showTopic(index),
-        false
-      );
-
+      const btn = new TaskButton({
+        scene: this.scene,
+        y: offsetY,
+        width: 250,
+        height: 50,
+        title: topic.title,
+        action: () => this.showTopic(index),
+      });
       topicList.add(btn.container);
-      offsetY += 45;
+      offsetY += 60;
     });
-    const closeBtn = new TaskButton(
-      this.scene,
-      offsetY * 2,
-      "CLOSE",
-      () => this.hide(),
-      false
-    );
+    const closeBtn = new TaskButton({
+      scene: this.scene,
+      y: offsetY * 2,
+      width: 250,
+      height: 50,
+      title: "CLOSE",
+      action: () => this.hide(),
+    });
     topicList.add(closeBtn.container);
 
     const contentX = listX + listWidth + 40;
@@ -102,14 +83,5 @@ export class DatabaseModal extends Phaser.GameObjects.Container {
     } else {
       this.topicImage?.setVisible(false);
     }
-  }
-
-  public show() {
-    this.setVisible(true);
-  }
-
-  public hide() {
-    this.onCloseAction?.();
-    this.setVisible(false);
   }
 }
