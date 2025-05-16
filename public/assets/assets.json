@@ -21,6 +21,11 @@
         "type": "json",
         "key": "factories",
         "url": "factories.json"
+      },
+      {
+        "type": "json",
+        "key": "waveTemplates",
+        "url": "waveTemplates.json"
       }
     ]
   },

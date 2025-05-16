@@ -1,21 +1,25 @@
 import { NextWave, UnitCount, UnitsData, UnitType } from "@/helpers/types";
 import { Game } from "@/scenes/Game";
 import { Unit } from "@/entities/Units/Unit";
-import {
-  map,
-  playerBase,
-  spawnTemplates,
-  unitCosts,
-  waveTemplates,
-} from "./model";
+import { map, playerBase, spawnTemplates, unitCosts } from "./model";
+
+type WaveTemplate = {
+  name: string;
+  types: UnitType[];
+  weights: number[];
+  multiplier: number;
+  minWave: number;
+};
 
 export class Commander {
   scene: Game;
   events = new Phaser.Events.EventEmitter();
   nextWave: NextWave;
+  waveTemplates: WaveTemplate[];
 
   constructor(scene: Game) {
     this.scene = scene;
+    this.waveTemplates = scene.cache.json.get("waveTemplates");
     this.generateNextWave();
     this.events.emit("nextWave", this.nextWave);
     scene.controlPanel.events.on(
@@ -32,7 +36,7 @@ export class Commander {
   generateWave(waveNumber: number) {
     const basePoints = 10;
     const points = basePoints + waveNumber * 3;
-    const validTemplates = waveTemplates.filter((t) => waveNumber >= t.minWave);
+    const validTemplates = this.waveTemplates.filter((t) => waveNumber >= t.minWave);
     const template =
       validTemplates[Math.floor(Math.random() * validTemplates.length)];
     let wavePoints = Math.floor(points * template.multiplier);
