@@ -32,7 +32,6 @@ export class Commander {
   generateWave(waveNumber: number) {
     const basePoints = 10;
     const points = basePoints + waveNumber * 3;
-
     const validTemplates = waveTemplates.filter((t) => waveNumber >= t.minWave);
     const template =
       validTemplates[Math.floor(Math.random() * validTemplates.length)];
@@ -44,6 +43,7 @@ export class Commander {
       artillery: 0,
       heavy: 0,
       medium: 0,
+      airHeavy: 0,
     };
 
     const { types, weights } = template;

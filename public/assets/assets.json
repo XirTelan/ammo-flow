@@ -77,12 +77,6 @@
         "key": "pixel_proj",
         "url": "pixel_proj.png"
       },
-
-      {
-        "type": "image",
-        "key": "projectile_base",
-        "url": "projectile_base.png"
-      },
       {
         "type": "image",
         "key": "map",
@@ -92,11 +86,6 @@
         "type": "image",
         "key": "grid",
         "url": "grid.png"
-      },
-      {
-        "type": "image",
-        "key": "ui",
-        "url": "ui.png"
       },
       {
         "type": "image",
@@ -125,6 +114,11 @@
       },
       {
         "type": "image",
+        "key": "u_airHeavy",
+        "url": "airHeavy.png"
+      },
+      {
+        "type": "image",
         "key": "u_artillery",
         "url": "artillery.png"
       },
@@ -141,7 +135,7 @@
       {
         "type": "image",
         "key": "u_heavy",
-        "url": "light.png"
+        "url": "heavy.png"
       }
     ]
   },

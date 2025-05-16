@@ -6,7 +6,13 @@ export type DamageType =
   | "energy";
 export type Warehouse = {};
 
-export type UnitType = "light" | "medium" | "heavy" | "air" | "artillery";
+export type UnitType =
+  | "light"
+  | "medium"
+  | "heavy"
+  | "air"
+  | "airHeavy"
+  | "artillery";
 export type UnitCount = {
   [key in UnitType]: number;
 };

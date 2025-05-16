@@ -16,7 +16,6 @@ export class Unit extends Phaser.Physics.Arcade.Image {
 
   constructor(scene: Game, x: number, y: number, texture: string) {
     super(scene, x, y, `u_${texture}`);
-    this.setScale(0.5);
     this.scene = scene;
 
     scene.add.existing(this);
@@ -52,6 +51,9 @@ export class Unit extends Phaser.Physics.Arcade.Image {
       this.target.x,
       this.target.y
     );
+
+    let angle = Phaser.Math.Angle.BetweenPoints(this, this.target.getCenter());
+    this.rotation = angle;
 
     if (distance > this.unitConfig.fireRange) {
       this.scene.physics.moveTo(

@@ -51,11 +51,18 @@ export const waveTemplates = [
     minWave: 20,
   },
   {
-    name: "AirRaid",
+    name: "Air",
     types: ["air"],
     weights: [1],
     multiplier: 0.9,
     minWave: 5,
+  },
+  {
+    name: "AirRaid",
+    types: ["air", "airHeavy"],
+    weights: [3, 2],
+    multiplier: 1.1,
+    minWave: 1,
   },
 ] satisfies {
   name: string;
@@ -83,4 +90,5 @@ export const unitCosts = {
   heavy: 5,
   air: 2,
   artillery: 4,
+  airHeavy: 5,
 };

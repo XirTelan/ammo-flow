@@ -35,6 +35,15 @@
     "fireRate": 1,
     "armor": 0
   },
+  "airHeavy": {
+    "hp": 80,
+    "speed": 20,
+    "damage": 10,
+    "fireRange": 350,
+    "type": "air",
+    "fireRate": 1,
+    "armor": 0
+  },
   "artillery": {
     "hp": 100,
     "speed": 5,
