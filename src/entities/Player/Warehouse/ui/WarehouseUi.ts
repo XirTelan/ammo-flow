@@ -1,11 +1,11 @@
 import { TurretType } from "@/helpers/types";
-import Phaser from "phaser";
+import Phaser, { Tweens } from "phaser";
 import { Warehouse } from "../Warehouse";
 import { colors } from "@/helpers/config";
 import { BaseButton } from "@/shared/ui/BaseButton";
 
 const STARTX = 530;
-const startY = 1200;
+const STARTY = 1200;
 const COLUMNSPACING = 180;
 const LINEHEIGHT = 20;
 const VALUESPACING = 130;
@@ -15,6 +15,8 @@ export class WarehouseUI {
   private warehouse: Warehouse;
   private container: Phaser.GameObjects.Container;
   private isVisible = true;
+
+  private activeTween: Tweens.Tween;
 
   private ammoTexts: Record<
     TurretType,
@@ -30,7 +32,7 @@ export class WarehouseUI {
   constructor(scene: Phaser.Scene, warehouse: Warehouse) {
     this.scene = scene;
     this.warehouse = warehouse;
-    this.container = this.scene.add.container(STARTX, startY);
+    this.container = this.scene.add.container(STARTX, STARTY);
     this.scene.add.image(0, 995, "warehousePanel").setDepth(10).setOrigin(0);
     this.createUI();
     this.createToggleButton();
@@ -128,10 +130,10 @@ export class WarehouseUI {
   }
 
   private toggleContainer() {
-    const targetY = this.isVisible
-      ? this.container.y - 250
-      : this.container.y + 250;
-    this.scene.tweens.add({
+    if (this.activeTween) this.activeTween.destroy();
+
+    const targetY = this.isVisible ? STARTY - 250 : STARTY;
+    this.activeTween = this.scene.tweens.add({
       targets: this.container,
       y: targetY,
       duration: 400,
