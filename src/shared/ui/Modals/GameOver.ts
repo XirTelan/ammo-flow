@@ -18,8 +18,7 @@ export class GameOverScreen extends Phaser.GameObjects.Container {
       { title: "Exit to Main Menu", action: () => this.exitToMainMenu() },
     ];
 
-    const width = scene.scale.width;
-    const height = scene.scale.height;
+    const { width, height } = scene.scale;
 
     this.setSize(width, height);
     this.setInteractive(
@@ -49,14 +48,14 @@ export class GameOverScreen extends Phaser.GameObjects.Container {
     const gameOverList = this.scene.add.container(centerX, centerY);
     let offsetY = 0;
     this.options.forEach((option) => {
-      const btn = new TaskButton(
-        this.scene,
-        offsetY,
-        option.title,
-        option.action,
-        false,
-        250
-      );
+      const btn = new TaskButton({
+        scene: this.scene,
+        y: offsetY,
+        title: option.title,
+        action: option.action,
+        width: 250,
+        height: 50,
+      });
 
       gameOverList.add(btn.container);
       offsetY += 45;

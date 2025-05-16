@@ -77,23 +77,40 @@ export class TaskPanel {
     return x < 1450 || x > 1900 || y < 400 || y > 1050;
   }
 
+  private createLineGraphics(
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) {
+    const graphics = this.scene.add.graphics();
+    graphics.lineStyle(4, colors.backgroundAccent.number);
+    graphics.lineBetween(x - width, y - height, x - width, y + 1);
+    graphics.lineBetween(x - width - 1, y, x - width + 15, y);
+    return graphics;
+  }
+
   private drawSection(x: number, y: number, title: string, actions: string[]) {
     const container = this.scene.add.container(x, y);
 
     actions.forEach((action, index) => {
-      const button = new TaskButton(
-        this.scene,
-        index * BUTTON_SPACING + TITLE_HEIGHT,
-        action,
-        () => {
+      const button = new TaskButton({
+        scene: this.scene,
+        x: 100,
+        y: index * BUTTON_SPACING + TITLE_HEIGHT * 2,
+        title: action,
+        action: () => {
           this.factoryPanel.selectedFactory?.setAmmoProduction(
             title as TurretType,
             action
           );
           this.ammoDetails.hide();
           this.hide();
-        }
-      );
+        },
+        width: 150,
+        height: 40,
+        borderThickness: 2,
+      });
       button.btn.on("pointerover", () => {
         this.ammoDetails.update(title as TurretType, action);
         this.ammoDetails.show();
@@ -101,7 +118,13 @@ export class TaskPanel {
       button.btn.on("pointerout", () => {
         this.ammoDetails.hide();
       });
-      container.add(button.container);
+      const lines = this.createLineGraphics(
+        button.container.x,
+        button.container.y,
+        90,
+        50
+      );
+      container.add([button.container, lines]);
     });
 
     container.add(this.createSectionTitle(title));
@@ -146,27 +169,28 @@ export class TaskPanel {
   }
 
   private sideBtns() {
-    const repairBtn = new TaskButton(
-      this.scene,
-      0,
-      "repair",
-      () => {
+    const repairBtn = new TaskButton({
+      x: 260,
+      y: 20,
+      scene: this.scene,
+      title: "repair",
+      action: () => {
         this.factoryPanel.selectedFactory?.switchToRepair();
         this.hide();
       },
-      false,
-      100
-    ).container;
-    const cancelBtn = new TaskButton(
-      this.scene,
-      0,
-      "cancel",
-      () => this.hide(),
-      false,
-      100
-    ).container;
-    repairBtn.setPosition(180, -10);
-    cancelBtn.setPosition(180, 40);
+      width: 100,
+      height: 50,
+    }).container;
+    const cancelBtn = new TaskButton({
+      x: 260,
+      y: 80,
+      scene: this.scene,
+      title: "cancel",
+      action: () => this.hide(),
+      width: 100,
+      height: 50,
+    }).container;
+
     this.contentContainer.add([repairBtn, cancelBtn]);
   }
 

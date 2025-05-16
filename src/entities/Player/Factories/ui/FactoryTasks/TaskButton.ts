@@ -1,109 +1,131 @@
-import { Scene } from "phaser";
-import { colors } from "../../../../../helpers/config";
+import { Scene, GameObjects } from "phaser";
+import { AudioManager } from "@/entities/general/AudioManager";
+import { colors } from "@/helpers/config";
+
+type TaskButtonConfig = {
+  scene: Scene;
+  x?: number;
+  y?: number;
+  width: number;
+  height: number;
+  title: string;
+  action: () => void;
+  borderThickness?: number;
+  showLines?: boolean;
+};
 
 export class TaskButton {
   private scene: Scene;
+  container: GameObjects.Container;
+  btn: GameObjects.Rectangle;
 
-  container: Phaser.GameObjects.Container;
-  btn: Phaser.GameObjects.GameObject;
-
-  constructor(
-    scene: Scene,
-    offset: number,
-    title: string,
-    action: () => void,
-    showLines: boolean = true,
-    width: number = 150,
-    borderThickness: number = 5
-  ) {
+  constructor({
+    scene,
+    x = 0,
+    y = 0,
+    width,
+    height,
+    title,
+    action,
+    borderThickness = 5,
+  }: TaskButtonConfig) {
     this.scene = scene;
+    this.container = scene.add.container(x, y);
 
-    const container = this.scene.add.container();
-    const yPos = offset + 30;
+    const border = this.createBorderBg(0, 0, width, height);
+    const bg = this.createBackground(0, 0, width, height, borderThickness);
+    const text = this.createText(0, 0, title);
 
-    if (showLines) {
-      container.add(this.createLineGraphics(offset));
-    }
+    this.setupHoverEffect(bg, text, action);
 
-    const border = this.createBorder(yPos, width);
-    const bg = this.createBackground(yPos, width, borderThickness);
-    const text = this.createText(yPos, title);
-
-    this.setupHoverEffect(bg, text);
-    bg.on("pointerup", action);
-
-    container.add([border, bg, text]);
-
-    this.container = container;
+    this.container.add([border, bg, text]);
     this.btn = bg;
   }
 
-  private createLineGraphics(offset: number): Phaser.GameObjects.Graphics {
-    const graphics = this.scene.add.graphics();
-    graphics.lineStyle(5, colors.backgroundAccent.number);
-    graphics.lineBetween(10, offset - 20, 10, offset + 30);
-    graphics.lineBetween(8, offset + 30, 50, offset + 30);
-    return graphics;
-  }
-
-  private createBorder(
-    yPos: number,
-    width: number
-  ): Phaser.GameObjects.Rectangle {
+  private createBorderBg(
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ): GameObjects.Rectangle {
     return this.scene.add.rectangle(
-      100,
-      yPos,
+      x,
+      y,
       width,
-      40,
+      height,
       colors.backgroundAccent.number
     );
   }
 
   private createBackground(
-    yPos: number,
+    x: number,
+    y: number,
     width: number,
-    borderThickness: number
-  ): Phaser.GameObjects.Rectangle {
+    height: number,
+    border: number
+  ): GameObjects.Rectangle {
     return this.scene.add
       .rectangle(
-        100,
-        yPos,
-        width - borderThickness * 2,
-        30,
+        x,
+        y,
+        width - border * 2,
+        height - border * 2,
         colors.overlay.number
       )
-      .setInteractive();
+      .setInteractive({ useHandCursor: true });
   }
 
-  private createText(yPos: number, title: string): Phaser.GameObjects.Text {
+  private createText(x: number, y: number, title: string): GameObjects.Text {
     return this.scene.add
-      .text(100, yPos, title.toUpperCase(), {
-        color: "#fff",
-        fontStyle: "bold",
+      .text(x, y, title.toUpperCase(), {
         fontSize: "22px",
+        fontStyle: "bold",
+        color: "#ffffff",
       })
       .setOrigin(0.5)
       .setShadow(0, 0, colors.accentHighlight.hex, 4, true, true);
   }
 
   private setupHoverEffect(
-    bg: Phaser.GameObjects.Rectangle,
-    text: Phaser.GameObjects.Text
+    bg: GameObjects.Rectangle,
+    text: GameObjects.Text,
+    onClick: () => void
   ) {
-    bg.on("pointerover", () => {
-      this.scene.sound.play("btnUiOver");
-      bg.fillColor = colors.backgroundAccent.number;
-      text.setColor("#444");
-      text.setShadow(0, 0, colors.accentHighlight.hex, 10, true, true);
-    });
-    bg.on("pointerout", () => {
-      bg.fillColor = colors.overlay.number;
+    const setHoverStyle = (hovered: boolean) => {
+      bg.fillColor = hovered
+        ? colors.backgroundAccent.number
+        : colors.overlay.number;
+      text.setColor(hovered ? "#444" : "#FFF");
+      text.setShadow(
+        0,
+        0,
+        colors.accentHighlight.hex,
+        hovered ? 10 : 4,
+        true,
+        true
+      );
+    };
 
-      text.setColor("#FFF");
-      text.setShadow(0, 0, colors.accentHighlight.hex, 4, true, true);
+    bg.on("pointerover", () => {
+      this.playSound("btnUiOver");
+      setHoverStyle(true);
     });
+
+    bg.on("pointerout", () => {
+      setHoverStyle(false);
+    });
+
     bg.on("pointerup", () => {
-      this.scene.sound.play("btnUiPress");
+      this.playSound("btnUiPress");
+      onClick();
     });
+  }
+
+  private playSound(key: string) {
+    AudioManager.getInstance().playSFX(this.scene, key);
+  }
+
+  destroy() {
+    this.container?.destroy(true);
   }
 }

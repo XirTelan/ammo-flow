@@ -217,8 +217,8 @@ export class TurretUI {
 
     const panelWidth = 255;
     const panelHeight = 85;
-    const columnSpacing = 100;
-    const rowSpacing = 50;
+    const columnSpacing = 120;
+    const rowSpacing = 30;
 
     this.changeAmmo = this.scene.add.container(0, 0);
 
@@ -230,23 +230,24 @@ export class TurretUI {
       (variant, index) => {
         const col = index % 2;
         const row = Math.floor(index / 2);
-        const offsetY = 45 + row * rowSpacing;
-        const offsetX = 5 + col * columnSpacing;
+        const offsetY = 60 + row * rowSpacing;
+        const offsetX = 80 + col * columnSpacing;
 
-        const btn = new TaskButton(
-          this.scene,
-          offsetY,
-          variant.toUpperCase(),
-          () => {
+        const btn = new TaskButton({
+          scene: this.scene,
+          x: offsetX,
+          y: offsetY,
+          title: variant.toUpperCase(),
+          action: () => {
             this.turret.setAmmoType(variant);
             this.hideChangeAmmoPanel();
           },
-          false,
-          120
-        );
+          width: 130,
+          height: 30,
+          borderThickness: 2,
+        });
+        btn.container.setScale(0.9);
 
-        btn.container.setX(offsetX);
-        btn.container.setScale(0.8);
         return btn.container;
       }
     );

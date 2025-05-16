@@ -50,22 +50,23 @@ export class MainMenuUi {
   }
 
   private createUI(width: number, height: number): void {
-    const menuWidth = 300;
-    const menuHeight = this.menuOptions.length * 60;
-    const centerX = (width - menuWidth) / 2;
-    const centerY = (height - menuHeight) / 2;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
     const menuList = this.scene.add.container(centerX, centerY);
-    let offsetY = 0;
+    let offsetY = -50;
+
     this.menuOptions.forEach((option) => {
-      const btn = new TaskButton(
-        this.scene,
-        offsetY,
-        option.title,
-        option.action,
-        false,
-        300
-      );
+      const btn = new TaskButton({
+        scene: this.scene,
+        x: 0,
+        y: offsetY,
+        width: 300,
+        height: 50,
+        title: option.title,
+        action: option.action,
+      });
+
       menuList.add(btn.container);
       offsetY += 60;
     });

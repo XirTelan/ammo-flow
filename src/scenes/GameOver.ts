@@ -33,23 +33,21 @@ export class GameOver extends Scene {
       })
       .setOrigin(0.5);
 
-    const listWidth = 200;
-    const listHeight = this.options.length * 45 + 45;
-    const centerX = (width - listWidth) / 2;
-    const centerY = (height - listHeight) / 2;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
     const gameOverList = this.add.container(centerX, centerY);
     let offsetY = 0;
 
     this.options.forEach((option) => {
-      const btn = new TaskButton(
-        this,
-        offsetY,
-        option.title,
-        option.action,
-        false,
-        250
-      );
+      const btn = new TaskButton({
+        scene: this,
+        y: offsetY,
+        title: option.title,
+        action: option.action,
+        width: 250,
+        height: 40,
+      });
 
       gameOverList.add(btn.container);
       offsetY += 45;
